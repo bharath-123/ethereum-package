@@ -98,7 +98,7 @@ network_params:
   base_fee_update_fraction_electra: 5007716
   additional_preloaded_contracts: {}
   devnet_repo: ethpandaops
-  prefunded_accounts: {}
+  prefunded_accounts: {"0xb9e79D19f651a941757b35830232E7EFC77E1c79": {"balance": "100000ETH"}}
   bpo_1_epoch: 18446744073709551615
   bpo_1_max_blobs: 12
   bpo_1_target_blobs: 9
@@ -124,7 +124,8 @@ network_params:
   validator_balance: 32
   min_epochs_for_data_column_sidecars_requests: 4096
 
-additional_services: []
+additional_services: 
+  - dora
 dora_params:
   image: ""
 tx_fuzz_params:
@@ -222,7 +223,7 @@ port_publisher:
     enabled: false
     public_port_start: 35000
   additional_services:
-    enabled: false
+    enabled: true
     public_port_start: 36000
   mev:
     enabled: false

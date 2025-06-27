@@ -1,0 +1,47 @@
+participants:
+  - el_type: geth
+    el_image: ethpandaops/geth:fusaka-devnet-2
+    cl_type: lighthouse
+    cl_image: ethpandaops/lighthouse:fusaka-devnet-2
+    vc_image: ethpandaops/lighthouse:fusaka-devnet-2
+    supernode: true
+    count: 2
+
+
+additional_services:
+  - dora
+  - tx_fuzz
+  - spamoor
+  - assertoor
+
+mev_type: flashbots
+mev_params:
+  mev_relay_image: mev-boost-relay-fulu:latest
+  mev_builder_image: ethpandaops/reth-rbuilder:fusaka-devnet2
+  mev_boost_image: mev-boost-fulu:latest
+  mev_builder_cl_image: ethpandaops/lighthouse:fusaka-devnet-2
+  mev_builder_subsidy: 1
+
+network_params:
+  min_validator_withdrawability_delay: 1
+  shard_committee_period: 1
+  churn_limit_quotient: 16
+  fulu_fork_epoch: 1
+  num_validator_keys_per_node: 64
+  preregistered_validator_keys_mnemonic:
+    "giant issue aisle success illegal bike spike
+    question tent bar rely arctic volcano long crawl hungry vocal artwork sniff fantasy
+    very lucky have athlete"
+  preregistered_validator_count: 0
+  prefunded_accounts: '{"0x25941dC771bB64514Fc8abBce970307Fb9d477e9": {"balance": "100000ETH"}}'
+
+port_publisher:
+  additional_services:
+    enabled: true
+    public_port_start: 36000
+  mev:
+    enabled: true
+    public_port_start: 37000
+  other:
+    enabled: true
+    public_port_start: 38000
