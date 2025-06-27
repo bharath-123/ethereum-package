@@ -14,11 +14,10 @@ additional_services:
   - spamoor
   - assertoor
 
-mev_type: flashbots
+mev_type: mock
 mev_params:
-  mev_relay_image: mev-boost-relay-fulu:test-3
-  mev_builder_image: ethpandaops/reth-rbuilder:fusaka-devnet2
-  mev_boost_image: mev-boost-fulu:latest
+  mock_mev_image: rustic-builder-fulu-5:latest
+  mev_boost_image: ethpandaops/mev-boost:jtraglia-fulu
   mev_builder_cl_image: ethpandaops/lighthouse:fusaka-devnet-2
   mev_builder_subsidy: 1
 
