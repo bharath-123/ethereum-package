@@ -37,7 +37,7 @@ def launch_mock_mev(
                 "--port={0}".format(MOCK_MEV_BUILDER_PORT),
                 "--address=0.0.0.0",
                 "--set-max-bid-value",
-                "--log-level={0}".format(global_log_level),
+                "--log-level=debug",
                 "--builder-secret-key=" + constants.DEFAULT_MEV_SECRET_KEY[2:],
             ],
             files={
