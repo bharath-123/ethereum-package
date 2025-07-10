@@ -1451,15 +1451,15 @@ def get_default_spamoor_params():
                 "description": "3 type-4 blob transactions per slot with 1-2 sidecars each, gas/blobgas limit 20 gwei",
                 "scenario": "blob-combined",
                 "config": {
-                    "throughput": 3,
-                    "sidecars": 2,
-                    "max_pending": 6,
+                    "throughput": 15,
+                    "max_pending": 10,
                     "max_wallets": 20,
                     "base_fee": 20,
                     "blob_fee": 20,
                 },
             },
         ],
+
     }
 
 

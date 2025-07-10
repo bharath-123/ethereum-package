@@ -16,8 +16,8 @@ additional_services:
 
 mev_type: mock
 mev_params:
-  mock_mev_image: rustic-builder-fulu-6:latest
-  mev_boost_image: mev-boost-fulu:test-4
+  mock_mev_image: rustic-builder-fulu:test-30
+  mev_boost_image: mev-boost-fulu:test-26
   mev_builder_cl_image: ethpandaops/lighthouse:fusaka-devnet-2
   mev_builder_subsidy: 1
 
