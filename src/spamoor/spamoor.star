@@ -56,19 +56,19 @@ def launch_spamoor(
             participant, index, participant_contexts, participant_configs
         )
 
-        # if "builder" in full_name:
-        #     spammers.append(
-        #         {
-        #             "scenario": "uniswap-swaps",
-        #             "name": "Uniswap Swaps",
-        #             "config": {
-        #                 "throughput": 100,
-        #                 "max_pending": 200,
-        #                 "max_wallets": 200,
-        #                 "client_group": "mevbuilder",
-        #             },
-        #         }
-        #     )
+        if "builder" in full_name:
+            spammers.append(
+                {
+                    "scenario": "uniswap-swaps",
+                    "name": "Uniswap Swaps",
+                    "config": {
+                        "throughput": 100,
+                        "max_pending": 200,
+                        "max_wallets": 200,
+                        "client_group": "mevbuilder",
+                    },
+                }
+            )
 
     template_and_data_by_rel_dest_filepath = {}
 

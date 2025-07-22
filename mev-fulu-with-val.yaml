@@ -16,11 +16,19 @@ additional_services:
 
 mev_type: flashbots
 mev_params:
-  mev_relay_image: mev-boost-relay-fulu:test-5
-  mev_builder_image: rbuilder-fulu-test:test-86
-  mev_boost_image: ethpandaops/mev-boost:jtraglia-fulu
+  mev_relay_image: ethpandaops/mev-boost-relay:bharath-123-bharath-fulu-c376661
+  mev_builder_image: rbuilder-fulu-test:test-1600
+  mev_boost_image: ethpandaops/mev-boost:bharath-123-bharath-fulu
   mev_builder_cl_image: ethpandaops/lighthouse:fusaka-devnet-2
   mev_builder_subsidy: 1
+
+spamoor_params:
+  spammers:
+     - name: "Blob Spammer (Kurtosis Package)"
+       description: "3 type-4 blob transactions per slot with 1-2 sidecars each, gas/blobgas limit 20 gwei"
+       scenario: "blobs"
+       config:
+         throughput: 10
 
 
 network_params:
