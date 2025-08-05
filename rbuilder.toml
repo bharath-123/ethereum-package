@@ -1,0 +1,49 @@
+log_json = true
+log_level = "info,rbuilder=debug,reth=info"
+redacted_telemetry_server_port = 6061
+redacted_telemetry_server_ip = "0.0.0.0"
+full_telemetry_server_port = 6060
+full_telemetry_server_ip = "0.0.0.0"
+
+chain = "/network-config/genesis.json"
+reth_datadir = "/data/reth"
+
+coinbase_secret_key = "env:COINBASE_SECRET_KEY"
+relay_secret_key = "env:RELAY_SECRET_KEY"
+optimistic_relay_secret_key = "env:OPTIMISTIC_RELAY_SECRET_KEY"
+
+cl_node_url = ["http://beacon:5052"]
+jsonrpc_server_port = 8645
+jsonrpc_server_ip = "0.0.0.0"
+el_node_ipc_path = "/tmp/reth.ipc"
+extra_data = "🐼⚡🤖"
+
+ignore_cancellable_orders = true
+
+genesis_fork_version = "0x10202361"
+
+sbundle_mergeable_signers = []
+live_builders = ["mp-ordering"]
+
+enabled_relays = ["flashbots"]
+
+root_hash_use_sparse_trie=true
+root_hash_compare_sparse_trie=false
+
+subsidy = "1"
+
+[[relays]]
+name = "flashbots"
+url = "http://0xa55c1285d84ba83a5ad26420cd5ad3091e49c55a813eee651cd467db38a8c8e63192f47955e9376f6b42f6d190571cb5@mev-relay-1.fusaka-devnet-3.ethpandaops.io:9062"
+priority = 0
+use_ssz_for_submit = false
+use_gzip_for_submit = false
+
+[[builders]]
+name = "mp-ordering"
+algo = "ordering-builder"
+discard_txs = true
+sorting = "max-profit"
+failed_order_retries = 1
+drop_failed_orders = true
+

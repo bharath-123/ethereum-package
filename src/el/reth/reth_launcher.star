@@ -191,6 +191,7 @@ def get_config(
             "--metrics=0.0.0.0:{0}".format(METRICS_PORT_NUM),
             "--discovery.port={0}".format(discovery_port_udp),
             "--port={0}".format(discovery_port_tcp),
+            "--rpc.eth-proof-window=3"
         ]
     )
 
@@ -258,9 +259,10 @@ def get_config(
         cmd.append("--rbuilder.config=" + flashbots_rbuilder.MEV_FILE_PATH_ON_CONTAINER)
         cmd.append("--engine.persistence-threshold=0")
         cmd.append("--engine.memory-block-buffer-target=0")
-        cmd.append(
-            "--txpool.no-local-transactions-propagation"
-        )  # disable tx propagation so that builder will have juicy blocks
+        cmd.append("--disable-tx-gossip")
+        # cmd.append(
+        #     "--txpool.no-local-transactions-propagation"
+        # )  # disable tx propagation so that builder will have juicy blocks
         files[
             flashbots_rbuilder.MEV_BUILDER_MOUNT_DIRPATH_ON_SERVICE
         ] = flashbots_rbuilder.MEV_BUILDER_FILES_ARTIFACT_NAME

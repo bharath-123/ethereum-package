@@ -10,14 +10,12 @@ participants:
 
 additional_services:
   - dora
-  - tx_fuzz
-  - spamoor
   - assertoor
 
 mev_type: flashbots
 mev_params:
-  mev_relay_image: mev-boost-relay:v2-api-6000
-  mev_builder_image: rbuilder-fulu-test:test-8000
+  mev_relay_image: ethpandaops/mev-boost-relay:bharath-123-fusaka-devnet-3
+  mev_builder_image: ethpandaops/reth-rbuilder:bharath-123-fusaka-devnet-3
   mev_boost_image: ethpandaops/mev-boost:bharath-123-fusaka-devnet-3
   mev_builder_cl_image: ethpandaops/lighthouse:fusaka-devnet-3
   mev_builder_subsidy: 1
@@ -30,17 +28,11 @@ spamoor_params:
        config:
          throughput: 10
 
-     - name: "ERC txs"
-       description: "ERC txs"
-       scenario: "erctx"
-       config:
-         throughput: 100
-
 network_params:
   min_validator_withdrawability_delay: 1
   shard_committee_period: 1
   churn_limit_quotient: 16
-  fulu_fork_epoch: 1
+  fulu_fork_epoch: 2
   num_validator_keys_per_node: 64
   preregistered_validator_keys_mnemonic:
     "giant issue aisle success illegal bike spike

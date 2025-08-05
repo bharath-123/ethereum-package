@@ -1435,17 +1435,17 @@ def get_default_spamoor_params():
         "extra_args": [],
         "spammers": [
             # default spammers
-            # {
-            #     "name": "EOA Spammer (Kurtosis Package)",
-            #     "description": "200 type-2 eoa transactions per slot, gas limit 20 gwei",
-            #     "scenario": "eoatx",
-            #     "config": {
-            #         "throughput": 200,
-            #         "max_pending": 400,
-            #         "max_wallets": 200,
-            #         "base_fee": 20,
-            #     },
-            # },
+            {
+                "name": "EOA Spammer (Kurtosis Package)",
+                "description": "200 type-2 eoa transactions per slot, gas limit 20 gwei",
+                "scenario": "eoatx",
+                "config": {
+                    "throughput": 200,
+                    "max_pending": 400,
+                    "max_wallets": 200,
+                    "base_fee": 20,
+                },
+            },
             {
                 "name": "Blob Spammer (Kurtosis Package)",
                 "description": "3 type-4 blob transactions per slot with 1-2 sidecars each, gas/blobgas limit 20 gwei",
