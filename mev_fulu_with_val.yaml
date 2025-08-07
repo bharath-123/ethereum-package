@@ -16,7 +16,7 @@ additional_services:
 
 mev_type: flashbots
 mev_params:
-  mev_relay_image: ethpandaops/mev-boost-relay:bharath-123-fusaka-devnet-3
+  mev_relay_image: mev-boost-relay:electra-test
   mev_builder_image: ethpandaops/reth-rbuilder:bharath-123-fusaka-devnet-3
   mev_boost_image: ethpandaops/mev-boost:bharath-123-fusaka-devnet-3
   mev_builder_cl_image: ethpandaops/lighthouse:fusaka-devnet-3
@@ -34,14 +34,14 @@ spamoor_params:
        description: "ERC txs"
        scenario: "erctx"
        config:
-         throughput: 215
+         throughput: 50
          max_pending: 400
 
 network_params:
   min_validator_withdrawability_delay: 1
   shard_committee_period: 1
   churn_limit_quotient: 16
-  fulu_fork_epoch: 1
+  electra_fork_epoch: 1
   num_validator_keys_per_node: 64
   preregistered_validator_keys_mnemonic:
     "giant issue aisle success illegal bike spike
