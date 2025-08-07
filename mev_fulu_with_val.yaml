@@ -10,7 +10,7 @@ participants:
 
 additional_services:
   - dora
-  - tx_fuzz
+#  - tx_fuzz
   - spamoor
   - assertoor
 
@@ -34,8 +34,8 @@ spamoor_params:
        description: "ERC txs"
        scenario: "erctx"
        config:
-         throughput: 216
-         max_pending: 430
+         throughput: 215
+         max_pending: 400
 
 network_params:
   min_validator_withdrawability_delay: 1
