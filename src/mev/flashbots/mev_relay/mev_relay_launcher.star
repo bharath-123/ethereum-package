@@ -105,6 +105,7 @@ def launch_mev_relay(
         "LOG_LEVEL": "debug",
         "DB_TABLE_PREFIX": "custom",
         "ENABLE_BUILDER_CANCELLATIONS": "1",
+        "BLOCKSIM_MAX_CONCURRENT": "0",
     }
 
     redis_url = "{}:{}".format(redis.hostname, redis.port_number)
