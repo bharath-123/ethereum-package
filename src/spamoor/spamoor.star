@@ -213,7 +213,7 @@ def new_hosts_template_data(
         if "builder" in full_name:
             rpchost = "group(mevbuilder)" + rpchost
 
-            rpchosts.append(rpchost)
+        rpchosts.append(rpchost)
 
     return {
         "RPCHosts": rpchosts,
