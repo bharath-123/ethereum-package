@@ -24,11 +24,11 @@ mev_params:
 
 spamoor_params:
   spammers:
-     - name: "Blob Spammer (Kurtosis Package)"
-       description: "3 type-4 blob transactions per slot with 1-2 sidecars each, gas/blobgas limit 20 gwei"
-       scenario: "blobs"
-       config:
-         throughput: 10
+    #  - name: "Blob Spammer (Kurtosis Package)"
+    #    description: "3 type-4 blob transactions per slot with 1-2 sidecars each, gas/blobgas limit 20 gwei"
+    #    scenario: "blobs"
+    #    config:
+    #      throughput: 10
 
      - name: "ERC txs"
        description: "ERC txs"
