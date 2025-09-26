@@ -10,7 +10,7 @@ USED_PORTS = {
         constants.MEV_BOOST_PORT, shared_utils.TCP_PROTOCOL, wait="5s"
     ),
     "http-metrics": shared_utils.new_port_spec(
-        "8002", shared_utils.TCP_PROTOCOL, wait="5s"
+        8002, shared_utils.TCP_PROTOCOL, wait="5s"
     ),
 }
 
