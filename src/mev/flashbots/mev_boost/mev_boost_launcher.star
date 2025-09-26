@@ -8,7 +8,10 @@ FLASHBOTS_MEV_BOOST_PROTOCOL = "TCP"
 USED_PORTS = {
     "http": shared_utils.new_port_spec(
         constants.MEV_BOOST_PORT, shared_utils.TCP_PROTOCOL, wait="5s"
-    )
+    ),
+    "http-metrics": shared_utils.new_port_spec(
+        "8002", shared_utils.TCP_PROTOCOL, wait="5s"
+    ),
 }
 
 NETWORK_ID_TO_NAME = {
