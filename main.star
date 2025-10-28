@@ -360,7 +360,6 @@ def run(plan, args={}):
         if (
             args_with_right_defaults.mev_type == constants.FLASHBOTS_MEV_TYPE
             or args_with_right_defaults.mev_type == constants.COMMIT_BOOST_MEV_TYPE
-            or args_with_right_defaults.mev_type == constants.HELIX_MEV_TYPE
         ):
             endpoint = flashbots_mev_relay.launch_mev_relay(
                 plan,
