@@ -8,7 +8,8 @@ static_files = import_module("../../../static_files/static_files.star")
 HELIX_RELAY_NAME="helix-relay"
 
 HELIX_RELAY_CONFIG_FILENAME = "config.yaml"
-HELIX_RELAY_MOUNT_DIRPATH_ON_SERVICE = "/config/"
+HELIX_RELAY_MOUNT_DIRPATH_ON_SERVICE = "/app/"
+HELIX_RELAY_FILES_ARTIFACT_NAME = "helix-relay-config"
 
 HELIX_RELAY_ENDPOINT_PORT = 9062
 HELIX_RELAY_WEBSITE_PORT = 9060
@@ -96,15 +97,44 @@ def launch_helix_relay(
     )
 
     network_name = NETWORK_ID_TO_NAME.get(network_id, network_id)
+    image = mev_params.mev_relay_image
 
-    image = mev_params.helix_relay_image
+    # Generate configuration file using template
+    helix_template_data = new_helix_relay_config_template_data(
+        network_name,
+        genesis_timestamp,
+        blocksim_uri,
+        beacon_uris,
+        validator_root,
+        postgres,
+        redis,
+        HELIX_RELAY_ENDPOINT_PORT,
+        HELIX_RELAY_WEBSITE_PORT,
+    )
+
+    # Read the helix config template
+    helix_config_template = read_file(static_files.HELIX_RELAY_CONFIG_FILEPATH)
+    template_and_data = shared_utils.new_template_and_data(
+        helix_config_template, helix_template_data
+    )
+
+    # Prepare template data for rendering
+    template_and_data_by_rel_dest_filepath = {}
+    template_and_data_by_rel_dest_filepath[HELIX_RELAY_CONFIG_FILENAME] = template_and_data
+
+    # Render the configuration file
+    config_files_artifact_name = plan.render_templates(
+        template_and_data_by_rel_dest_filepath, HELIX_RELAY_FILES_ARTIFACT_NAME
+    )
+
+    # Path where config file will be mounted in container
+    config_file_path = shared_utils.path_join(
+        HELIX_RELAY_MOUNT_DIRPATH_ON_SERVICE, HELIX_RELAY_CONFIG_FILENAME
+    )
 
     env_vars = {
         "RELAY_KEY": constants.DEFAULT_MEV_PUBKEY,
     }
-
-    redis_url = "{}:{}".format(redis.hostname, redis.port_number)
-    postgres_url = postgres.url + "?sslmode=disable"
 
     api = plan.add_service(
         name=HELIX_RELAY_NAME,
@@ -114,12 +144,15 @@ def launch_helix_relay(
                 "--config",
                 config_file_path,
             ],
+            files={
+                HELIX_RELAY_MOUNT_DIRPATH_ON_SERVICE: config_files_artifact_name,
+            },
             ports={
                 "http": PortSpec(
-                    number=MEV_RELAY_ENDPOINT_PORT, transport_protocol="TCP"
+                    number=HELIX_RELAY_ENDPOINT_PORT, transport_protocol="TCP"
                 ),
-                "http": PortSpec(
-                    number=MEV_RELAY_WEBSITE_PORT, transport_protocol="TCP"
+                "website": PortSpec(
+                    number=HELIX_RELAY_WEBSITE_PORT, transport_protocol="TCP"
                 ),
             },
             public_ports=public_ports,
@@ -134,20 +167,34 @@ def launch_helix_relay(
     )
 
     return "http://{0}@{1}:{2}".format(
-        constants.DEFAULT_MEV_PUBKEY, api.ip_address, MEV_RELAY_ENDPOINT_PORT
+        constants.DEFAULT_MEV_PUBKEY, api.ip_address, HELIX_RELAY_ENDPOINT_PORT
     )
 
 def new_helix_relay_config_template_data(
-    network,
+    network_name,
     genesis_timestamp,
     blocksim_uri,
     beacon_uris,
     validator_root,
+    postgres,
+    redis,
+    endpoint_port,
+    website_port,
 ):
     return {
-        "Network": network,
-        "GenesisTimestamp": genesis_timestamp, 
-        "BlocksimURI": blocksim_uri,
-        "BeaconURIs": beacon_uris,
-        "ValidatorRoot": validator_root,
+        "NETWORK_NAME": network_name,
+        "GENESIS_TIME": genesis_timestamp,
+        "BLOCKSIM_URI": blocksim_uri,
+        "BEACON_URI": beacon_uris,
+        "GENESIS_VALIDATORS_ROOT": validator_root,
+        "POSTGRES_HOST_NAME": postgres.hostname,
+        "POSTGRES_PORT": postgres.port_number,
+        "POSTGRES_DB": postgres.database,
+        "POSTGRES_USER": postgres.user,
+        "POSTGRES_PASS": postgres.password,
+        "HELIX_RELAY_ENDPOINT_PORT": endpoint_port,
+        "HELIX_RELAY_WEBSITE_PORT": website_port,
+        "HELIX_RELAY_ENDPOINT_URL": "helix-relay:{}".format(endpoint_port),
+        "HELIX_RELAY_PUBKEY": constants.DEFAULT_MEV_PUBKEY,
+        "GENESIS_CONFIG_MOUNT_PATH_ON_CONTAINER": constants.GENESIS_DATA_MOUNTPOINT_ON_CLIENTS,
     }
