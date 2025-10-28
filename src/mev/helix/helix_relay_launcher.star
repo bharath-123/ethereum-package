@@ -1,9 +1,9 @@
 redis_module = import_module("github.com/kurtosis-tech/redis-package/main.star")
 postgres_module = import_module("github.com/kurtosis-tech/postgres-package/main.star")
-constants = import_module("../../../package_io/constants.star")
-shared_utils = import_module("../../../shared_utils/shared_utils.star")
-input_parser = import_module("../../../package_io/input_parser.star")
-static_files = import_module("../../../static_files/static_files.star")
+constants = import_module("../../package_io/constants.star")
+shared_utils = import_module("../../shared_utils/shared_utils.star")
+input_parser = import_module("../../package_io/input_parser.star")
+static_files = import_module("../../static_files/static_files.star")
 
 HELIX_RELAY_NAME="helix-relay"
 
