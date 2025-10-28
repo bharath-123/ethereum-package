@@ -149,8 +149,9 @@ def launch_helix_relay(
         config=ServiceConfig(
             image=image,
             cmd=[
-                "--config",
-                config_file_path,
+                "/bin/sh",
+                "-c",
+                "ls -la /app && /app/helix-relay --config " + config_file_path,
             ],
             files={
                 HELIX_RELAY_MOUNT_DIRPATH_ON_SERVICE: config_files_artifact_name,
