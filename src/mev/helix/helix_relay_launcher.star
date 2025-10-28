@@ -63,7 +63,7 @@ def launch_helix_relay(
     )
     public_port_assignments = {
         constants.HTTP_PORT_ID: public_ports_for_component[0],
-        constants.HTTP_PORT_ID: public_ports_for_component[1],
+        "website": public_ports_for_component[1],
     }
     public_ports = shared_utils.get_port_specs(public_port_assignments)
     
