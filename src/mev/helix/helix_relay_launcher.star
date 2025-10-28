@@ -159,7 +159,7 @@ def launch_helix_relay(
                 "http": PortSpec(
                     number=HELIX_RELAY_ENDPOINT_PORT, transport_protocol="TCP"
                 ),
-                "website": PortSpec(
+                "metrics": PortSpec(
                     number=HELIX_RELAY_WEBSITE_PORT, transport_protocol="TCP"
                 ),
             },
