@@ -149,7 +149,6 @@ def launch_helix_relay(
         config=ServiceConfig(
             image=image,
             cmd=[
-                "/app/helix-relay",
                 "--config",
                 config_file_path,
             ],
