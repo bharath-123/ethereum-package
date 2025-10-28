@@ -56,16 +56,24 @@ def launch_helix_relay(
 ):
     tolerations = shared_utils.get_tolerations(global_tolerations=global_tolerations)
 
-    public_ports_for_component = shared_utils.get_public_ports_for_component(
-        "mev",
+    # Get public ports for the API endpoint
+    public_ports = shared_utils.get_mev_public_port(
         port_publisher,
-        index
+        constants.HTTP_PORT_ID,
+        index,
+        0,
     )
-    public_port_assignments = {
-        constants.HTTP_PORT_ID: public_ports_for_component[0],
-        "website": public_ports_for_component[1],
-    }
-    public_ports = shared_utils.get_port_specs(public_port_assignments)
+    
+    # Get public ports for the website
+    website_public_ports = shared_utils.get_mev_public_port(
+        port_publisher,
+        constants.METRICS_PORT_ID,
+        index,
+        1,
+    )
+    
+    # Combine both public port assignments
+    public_ports.update(website_public_ports)
     
 
     node_selectors = global_node_selectors
