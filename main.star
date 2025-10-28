@@ -217,7 +217,7 @@ def run(plan, args={}):
         plan.print("Generating flashbots builder config file")
         flashbots_builder_config_file = flashbots_mev_rbuilder.new_builder_config(
             plan,
-            constants.FLASHBOTS_MEV_TYPE,
+            args_with_right_defaults.mev_type,
             network_params,
             constants.VALIDATING_REWARDS_ACCOUNT,
             network_params.preregistered_validator_keys_mnemonic,
