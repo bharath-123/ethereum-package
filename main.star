@@ -394,6 +394,7 @@ def run(plan, args={}):
                 network_id,
                 beacon_uri,
                 genesis_validators_root,
+                final_genesis_timestamp,
                 blocksim_uri,
                 network_params,
                 persistent,
