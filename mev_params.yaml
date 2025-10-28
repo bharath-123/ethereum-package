@@ -13,9 +13,9 @@ additional_services:
   - spamoor
   - assertoor
 
-mev_type: flashbots
+mev_type: helix
 mev_params:
-  mev_relay_image: mev-boost-relay:go-boost-utils-update
+  mev_relay_image: ghcr.io/gattaca-com/helix-relay:main
   mev_builder_image: ethpandaops/reth-rbuilder:develop
   mev_boost_image: flashbots/mev-boost:1.10a7
   mev_builder_cl_image: ethpandaops/lighthouse:unstable
@@ -40,7 +40,7 @@ network_params:
   min_validator_withdrawability_delay: 1
   shard_committee_period: 1
   churn_limit_quotient: 16
-  fulu_fork_epoch: 2
+  electra_fork_epoch: 2
   num_validator_keys_per_node: 64
   preregistered_validator_keys_mnemonic:
     "giant issue aisle success illegal bike spike
