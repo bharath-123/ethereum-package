@@ -1,14 +1,10 @@
 # Optional: Custom instance identifier for logging/monitoring
 instance_id: "kurtosis-helix-relay"
 
-{{- if or (eq .NETWORK_NAME "mainnet") (eq .NETWORK_NAME "sepolia") (eq .NETWORK_NAME "holesky") (eq .NETWORK_NAME "hoodi") }}
-network_config: {{ .NETWORK_NAME | title }}
-{{- else }}
 network_config: !Custom
   dir_path: "{{ .GENESIS_CONFIG_MOUNT_PATH_ON_CONTAINER }}"
   genesis_validator_root: "{{ .GENESIS_VALIDATORS_ROOT }}"
   genesis_time: {{ .GENESIS_TIME }}
-{{- end }}
 
 # PostgreSQL Database Configuration (with TimescaleDB)
 postgres:
