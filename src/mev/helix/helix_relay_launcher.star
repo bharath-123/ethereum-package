@@ -89,12 +89,14 @@ def launch_helix_relay(
         tolerations=tolerations,
     )
     # making the password postgres as the relay expects it to be postgres
+    # Using TimescaleDB image as Helix relay requires TimescaleDB extension
     postgres = postgres_module.run(
         plan,
         password="postgres",
         user="postgres",
         database="postgres",
         service_name="helix-relay-postgres",
+        image="timescale/timescaledb:latest-pg15",
         persistent=persistent,
         launch_adminer=mev_params.launch_adminer,
         min_cpu=POSTGRES_MIN_CPU,
