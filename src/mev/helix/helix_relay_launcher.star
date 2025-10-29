@@ -5,7 +5,7 @@ shared_utils = import_module("../../shared_utils/shared_utils.star")
 input_parser = import_module("../../package_io/input_parser.star")
 static_files = import_module("../../static_files/static_files.star")
 
-HELIX_RELAY_NAME="helix-relay"
+HELIX_RELAY_NAME="helix-relay-api"
 
 HELIX_RELAY_CONFIG_FILENAME = "config.yaml"
 HELIX_RELAY_MOUNT_DIRPATH_ON_SERVICE = "/app/"
