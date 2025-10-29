@@ -151,7 +151,7 @@ def launch_helix_relay(
             entrypoint=["/bin/sh"],
             cmd=[
                 "-c",
-                "ls -la /app && echo '---' && file /app/helix-relay && echo '---' && /app/helix-relay --help",
+                "find / -name '*helix*' -type f 2>/dev/null && echo '---' && ls -la /usr/bin/ | grep -i helix && echo '---' && ls -la /bin/ | grep -i helix",
             ],
             files={
                 HELIX_RELAY_MOUNT_DIRPATH_ON_SERVICE: config_files_artifact_name,
