@@ -13,6 +13,8 @@ postgres:
   db_name: "{{ .POSTGRES_DB }}"
   user: "{{ .POSTGRES_USER }}"
   password: "{{ .POSTGRES_PASS }}"
+  region: 0
+  region_name: "LOCAL"
 
 # Beacon Client(s) - for fetching chain data and publishing blocks
 beacon_clients:
