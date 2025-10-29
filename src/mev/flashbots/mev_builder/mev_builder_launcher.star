@@ -76,7 +76,7 @@ def new_builder_config_template_data(
     # Determine relay service name and port based on MEV type
     if mev_type == constants.HELIX_MEV_TYPE:
         relay_service = "helix-relay"
-        relay_port = 9062  # HELIX_RELAY_ENDPOINT_PORT
+        relay_port = 4040  # HELIX_RELAY_ENDPOINT_PORT
         relay_name = "helix"
     else:
         relay_service = "mev-relay-api"
