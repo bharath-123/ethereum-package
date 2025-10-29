@@ -77,7 +77,7 @@ logging: !Console
 # Optional: Website/dashboard
 website:
   enabled: true
-  port: "{{ .HELIX_RELAY_WEBSITE_PORT }}"
+  port: {{ .HELIX_RELAY_WEBSITE_PORT }}
   listen_address: "0.0.0.0"
   show_config_details: false
   network_name: "Kurtosis Helix Relay" # TODO - we can configure this to show network
