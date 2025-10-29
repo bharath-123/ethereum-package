@@ -115,6 +115,7 @@ def get_config(
         if (
             launcher.builder_type == constants.FLASHBOTS_MEV_TYPE
             or launcher.builder_type == constants.COMMIT_BOOST_MEV_TYPE
+            or launcher.builder_type == constants.HELIX_MEV_TYPE
         ):
             additional_public_port_assignments[
                 constants.RBUILDER_PORT_ID
