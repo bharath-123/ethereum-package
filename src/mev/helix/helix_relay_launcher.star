@@ -197,7 +197,7 @@ def new_helix_relay_config_template_data(
         "BEACON_URI": beacon_uris,
         "GENESIS_VALIDATORS_ROOT": validator_root,
         "POSTGRES_HOST_NAME": postgres.service.name,
-        "POSTGRES_PORT": "5432",
+        "POSTGRES_PORT": 5432,
         "POSTGRES_DB": "postgres",
         "POSTGRES_USER": "postgres",
         "POSTGRES_PASS": "postgres",

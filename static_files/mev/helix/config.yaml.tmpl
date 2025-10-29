@@ -9,7 +9,7 @@ network_config: !Custom
 # PostgreSQL Database Configuration (with TimescaleDB)
 postgres:
   hostname: "{{ .POSTGRES_HOST_NAME }}"
-  port: "{{ .POSTGRES_PORT }}"
+  port: {{ .POSTGRES_PORT }}
   db_name: "{{ .POSTGRES_DB }}"
   user: "{{ .POSTGRES_USER }}"
   password: "{{ .POSTGRES_PASS }}"
