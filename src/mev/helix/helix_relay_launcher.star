@@ -150,8 +150,7 @@ def launch_helix_relay(
             image=image,
             entrypoint=["sh"],
             cmd=[
-                "-c",
-                "/app/helix-relay"
+                "ls -lah"
             ],
             files={
                 HELIX_RELAY_MOUNT_DIRPATH_ON_SERVICE: config_files_artifact_name,
