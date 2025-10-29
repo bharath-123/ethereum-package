@@ -148,10 +148,10 @@ def launch_helix_relay(
         name=HELIX_RELAY_NAME,
         config=ServiceConfig(
             image=image,
-            entrypoint=["/bin/sh"],
+            entrypoint=["sh"],
             cmd=[
                 "-c",
-                "ls -la /app && echo '---' && find / -name '*helix*' -type f 2>/dev/null && echo '---' && /app/helix-relay --config /app/config.yaml",
+                "/app/helix-relay"
             ],
             files={
                 HELIX_RELAY_MOUNT_DIRPATH_ON_SERVICE: config_files_artifact_name,
