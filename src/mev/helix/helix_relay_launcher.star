@@ -150,6 +150,7 @@ def launch_helix_relay(
             image=image,
             entrypoint=["sh", "-c"],
             cmd=[
+                "ls",
                 "/app"
             ],
             files={
