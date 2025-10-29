@@ -141,7 +141,7 @@ def launch_helix_relay(
     )
 
     env_vars = {
-        "RELAY_KEY": constants.DEFAULT_MEV_PUBKEY,
+        "RELAY_KEY": constants.DEFAULT_MEV_SECRET_KEY,
     }
 
     api = plan.add_service(
