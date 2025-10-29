@@ -2,7 +2,7 @@
 instance_id: "kurtosis-helix-relay"
 
 network_config: !Custom
-  dir_path: "{{ .GENESIS_CONFIG_MOUNT_PATH_ON_CONTAINER }}/genesis.json"
+  dir_path: "{{ .GENESIS_CONFIG_MOUNT_PATH_ON_CONTAINER }}"
   genesis_validator_root: "{{ .GENESIS_VALIDATORS_ROOT }}"
   genesis_time: {{ .GENESIS_TIME }}
 

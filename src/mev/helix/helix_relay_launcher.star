@@ -149,10 +149,10 @@ def launch_helix_relay(
         name=HELIX_RELAY_NAME,
         config=ServiceConfig(
             image=image,
-            # entrypoint=["sh", "-c"],
+            entrypoint=["sh", "-c"],
             cmd=[
-                "--config",
-                config_file_path
+                "ls",
+                "/network-configs"
             ],
             files={
                 HELIX_RELAY_MOUNT_DIRPATH_ON_SERVICE: config_files_artifact_name,
