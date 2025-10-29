@@ -70,7 +70,7 @@ def generate_el_cl_genesis_data(
     genesis = plan.run_sh(
         name="run-generate-genesis",
         description="Creating genesis",
-        run="cp /opt/values.env /config/values.env && ./entrypoint.sh all && mkdir /network-configs && mv /data/metadata/* /network-configs/ && mv /data/parsed /network-configs/parsed && python3 -c 'import yaml, json; json.dump(yaml.safe_load(open(\"/network-configs/config.yaml\")), open(\"/network-configs/config.json\", \"w\"), indent=2)'",
+        run="cp /opt/values.env /config/values.env && ./entrypoint.sh all && mkdir /network-configs && mv /data/metadata/* /network-configs/ && mv /data/parsed /network-configs/parsed && python3 -c \"import yaml, json; data = yaml.safe_load(open('/network-configs/config.yaml')); def to_strings(obj): return {k: to_strings(v) for k, v in obj.items()} if isinstance(obj, dict) else [to_strings(item) for item in obj] if isinstance(obj, list) else str(obj); json.dump(to_strings(data), open('/network-configs/config.json', 'w'), indent=2)\"",
         image=image,
         files=files,
         store=[
