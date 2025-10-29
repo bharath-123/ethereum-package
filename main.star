@@ -402,6 +402,7 @@ def run(plan, args={}):
                 num_participants,
                 global_node_selectors,
                 global_tolerations,
+                el_cl_data_files_artifact_uuid,
             )
         else:
             fail("Invalid MEV type")

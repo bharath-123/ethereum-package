@@ -53,6 +53,7 @@ def launch_helix_relay(
     index,
     global_node_selectors,
     global_tolerations,
+    el_cl_genesis_data,
 ):
     tolerations = shared_utils.get_tolerations(global_tolerations=global_tolerations)
 
@@ -155,6 +156,7 @@ def launch_helix_relay(
             ],
             files={
                 HELIX_RELAY_MOUNT_DIRPATH_ON_SERVICE: config_files_artifact_name,
+                constants.GENESIS_DATA_MOUNTPOINT_ON_CLIENTS: el_cl_genesis_data,
             },
             ports={
                 "http": PortSpec(
