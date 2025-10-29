@@ -20,6 +20,8 @@ postgres:
 beacon_clients:
   - url: "{{ .BEACON_URI }}"
 
+gossip_payload_on_header: false
+
 # Simulator(s) - Execution clients for block validation
 simulators:
   # Regular validation simulator
