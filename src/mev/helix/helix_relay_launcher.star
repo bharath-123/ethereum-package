@@ -151,7 +151,7 @@ def launch_helix_relay(
             image=image,
             entrypoint=["sh", "-c"],
             cmd=[
-                "ls /network-configs",
+                "echo '=== /config directory ===' && ls -la /config && echo '' && echo '=== /network-configs directory ===' && ls -la /network-configs && echo '' && echo '=== /network-configs contents (recursive) ===' && find /network-configs -type f 2>/dev/null | head -20 && echo '=== Starting helix-relay ===' && /app/helix-relay --config /config/config.yaml",
             ],
             files={
                 HELIX_RELAY_MOUNT_DIRPATH_ON_SERVICE: config_files_artifact_name,
