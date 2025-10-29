@@ -148,9 +148,9 @@ def launch_helix_relay(
         name=HELIX_RELAY_NAME,
         config=ServiceConfig(
             image=image,
-            entrypoint=["sh"],
+            entrypoint=["ls -lah"],
             cmd=[
-                "ls -lah"
+                "/app"
             ],
             files={
                 HELIX_RELAY_MOUNT_DIRPATH_ON_SERVICE: config_files_artifact_name,
