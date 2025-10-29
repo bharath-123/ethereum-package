@@ -153,7 +153,7 @@ def launch_helix_relay(
             cmd=[
                 # "--config",
                 # config_file_path
-                "cat /network-configs/chainspec.json"
+                "cat /network-configs/config.yaml"
             ],
             files={
                 HELIX_RELAY_MOUNT_DIRPATH_ON_SERVICE: config_files_artifact_name,
