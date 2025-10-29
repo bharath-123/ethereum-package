@@ -151,8 +151,7 @@ def launch_helix_relay(
             image=image,
             entrypoint=["sh", "-c"],
             cmd=[
-                "ls",
-                "/network-configs"
+                "ls /network-configs",
             ],
             files={
                 HELIX_RELAY_MOUNT_DIRPATH_ON_SERVICE: config_files_artifact_name,
