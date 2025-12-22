@@ -16,6 +16,9 @@ postgres:
   region: 0
   region_name: "LOCAL"
 
+api: 
+  port: {{ .API_PORT}}
+
 # Beacon Client(s) - for fetching chain data and publishing blocks
 beacon_clients:
   - url: "{{ .BEACON_URI }}"

@@ -687,6 +687,7 @@ def input_parser(plan, input_args):
             ],
             mock_mev_image=result["mev_params"]["mock_mev_image"],
             launch_adminer=result["mev_params"]["launch_adminer"],
+            helix_relay_port=result["mev_params"]["helix_relay_port"],
         )
         if result["mev_params"]
         else None,
@@ -1644,6 +1645,7 @@ def get_default_mev_params(mev_type, preset):
         "mev_relay_website_extra_env_vars": mev_relay_website_extra_env_vars,
         "mev_builder_prometheus_config": mev_builder_prometheus_config,
         "launch_adminer": launch_adminer,
+        "helix_relay_port": 4040,
     }
 
 

@@ -355,6 +355,7 @@ SUBCATEGORY_PARAMS = {
         "custom_flood_params",
         "mock_mev_image",
         "launch_adminer",
+        "helix_relay_port",
     ],
     "xatu_sentry_params": [
         "xatu_sentry_image",

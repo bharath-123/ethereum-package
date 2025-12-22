@@ -28,6 +28,9 @@ def new_builder_config(
     num_of_participants = shared_utils.zfill_custom(
         len(participants), len(str(len(participants)))
     )
+    # Get helix relay port from mev_params or use default
+    helix_relay_port = mev_params.helix_relay_port if hasattr(mev_params, "helix_relay_port") else helix_relay.DEFAULT_HELIX_RELAY_ENDPOINT_PORT
+
     builder_template_data = new_builder_config_template_data(
         network_params,
         constants.DEFAULT_MEV_PUBKEY,
@@ -38,6 +41,7 @@ def new_builder_config(
         num_of_participants,
         mev_params.mev_builder_subsidy,
         mev_type,
+        helix_relay_port,
     )
     flashbots_builder_config_template = read_file(
         static_files.FLASHBOTS_RBUILDER_CONFIG_FILEPATH
@@ -73,11 +77,12 @@ def new_builder_config_template_data(
     num_of_participants,
     subsidy,
     mev_type,
+    helix_relay_port,
 ):
     # Determine relay service name and port based on MEV type
     if mev_type == constants.HELIX_MEV_TYPE:
         relay_service = "helix-relay"
-        relay_port = helix_relay.HELIX_RELAY_ENDPOINT_PORT
+        relay_port = helix_relay_port
         relay_name = "helix"
     else:
         relay_service = "mev-relay-api"

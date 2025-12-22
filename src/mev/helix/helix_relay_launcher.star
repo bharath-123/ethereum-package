@@ -13,21 +13,23 @@ HELIX_RELAY_CONFIG_FILENAME = "config.yaml"
 HELIX_RELAY_MOUNT_DIRPATH_ON_SERVICE = "/config/"
 HELIX_RELAY_FILES_ARTIFACT_NAME = "helix-relay-config"
 
-HELIX_RELAY_ENDPOINT_PORT = 4040
+DEFAULT_HELIX_RELAY_ENDPOINT_PORT = 4040
 HELIX_RELAY_WEBSITE_PORT = 9060
 
-USED_PORTS = {
-    ENDPOINT_PORT_ID: shared_utils.new_port_spec(
-        HELIX_RELAY_ENDPOINT_PORT,
-        shared_utils.TCP_PROTOCOL,
-        shared_utils.HTTP_APPLICATION_PROTOCOL,
-    ),
-    HTTP_PORT_ID: shared_utils.new_port_spec(
-        HELIX_RELAY_WEBSITE_PORT,
-        shared_utils.TCP_PROTOCOL,
-        shared_utils.HTTP_APPLICATION_PROTOCOL,
-    ),
-}
+
+def get_used_ports(endpoint_port):
+    return {
+        ENDPOINT_PORT_ID: shared_utils.new_port_spec(
+            endpoint_port,
+            shared_utils.TCP_PROTOCOL,
+            shared_utils.HTTP_APPLICATION_PROTOCOL,
+        ),
+        HTTP_PORT_ID: shared_utils.new_port_spec(
+            HELIX_RELAY_WEBSITE_PORT,
+            shared_utils.TCP_PROTOCOL,
+            shared_utils.HTTP_APPLICATION_PROTOCOL,
+        ),
+    }
 
 # The min/max CPU/memory that mev-relay can use
 RELAY_MIN_CPU = 500
@@ -93,6 +95,9 @@ def launch_helix_relay(
         tolerations=tolerations,
     )
 
+    # Get the helix relay port from mev_params or use default
+    helix_relay_port = mev_params.helix_relay_port if hasattr(mev_params, "helix_relay_port") else DEFAULT_HELIX_RELAY_ENDPOINT_PORT
+
     # Generate configuration file using template
     helix_template_data = new_helix_relay_config_template_data(
         network_params,
@@ -101,6 +106,7 @@ def launch_helix_relay(
         beacon_uris,
         genesis_validators_root,
         postgres,
+        helix_relay_port,
     )
 
     # Read the helix config template
@@ -138,7 +144,7 @@ def launch_helix_relay(
                 HELIX_RELAY_MOUNT_DIRPATH_ON_SERVICE: config_files_artifact_name,
                 constants.GENESIS_DATA_MOUNTPOINT_ON_CLIENTS: el_cl_genesis_data,
             },
-            ports=USED_PORTS,
+            ports=get_used_ports(helix_relay_port),
             public_ports=public_ports,
             env_vars=env_vars | mev_params.mev_relay_api_extra_env_vars,
             min_cpu=RELAY_MIN_CPU,
@@ -151,7 +157,7 @@ def launch_helix_relay(
     )
 
     return "http://{0}@{1}:{2}".format(
-        constants.DEFAULT_MEV_PUBKEY, endpoint.ip_address, HELIX_RELAY_ENDPOINT_PORT
+        constants.DEFAULT_MEV_PUBKEY, endpoint.ip_address, helix_relay_port
     )
 
 
@@ -162,6 +168,7 @@ def new_helix_relay_config_template_data(
     beacon_uris,
     genesis_validators_root,
     postgres,
+    helix_relay_port,
 ):
     return {
         "NETWORK_NAME": network_params.network,
@@ -174,9 +181,10 @@ def new_helix_relay_config_template_data(
         "POSTGRES_DB": "postgres",
         "POSTGRES_USER": "postgres",
         "POSTGRES_PASS": "postgres",
-        "HELIX_RELAY_ENDPOINT_PORT": HELIX_RELAY_ENDPOINT_PORT,
+        "API_PORT": helix_relay_port,
+        "HELIX_RELAY_ENDPOINT_PORT": helix_relay_port,
         "HELIX_RELAY_WEBSITE_PORT": HELIX_RELAY_WEBSITE_PORT,
-        "HELIX_RELAY_ENDPOINT_URL": "helix-relay:{}".format(HELIX_RELAY_ENDPOINT_PORT),
+        "HELIX_RELAY_ENDPOINT_URL": "helix-relay:{}".format(helix_relay_port),
         "HELIX_RELAY_PUBKEY": constants.DEFAULT_MEV_PUBKEY,
         "GENESIS_CONFIG_MOUNT_PATH_ON_CONTAINER": constants.GENESIS_DATA_MOUNTPOINT_ON_CLIENTS,
     }
