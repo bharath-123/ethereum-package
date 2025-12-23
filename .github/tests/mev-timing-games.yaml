@@ -26,6 +26,8 @@ mev_params:
   mev_builder_subsidy: 1
   # Enable timing games for the flashbots relay
   mev_boost_timing_games_params:
+    timeout_get_header_ms: 900
+    late_in_slot_time_ms: 1500
     flashbots:
       enable_timing_games: true
       target_first_request_ms: 200

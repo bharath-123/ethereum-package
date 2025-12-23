@@ -127,7 +127,11 @@ def generate_config_file(
             }
         )
 
-    template_data = {"Relays": relays}
+    template_data = {
+        "Relays": relays,
+        "TimeoutGetHeaderMs": timing_games_params.get("timeout_get_header_ms", 950),
+        "LateInSlotTimeMs": timing_games_params.get("late_in_slot_time_ms", 2000),
+    }
 
     mev_boost_config_template = read_file(
         static_files.FLASHBOTS_MEV_BOOST_CONFIG_FILEPATH
@@ -206,7 +210,7 @@ def get_config(
         public_ports=public_ports,
         cmd=command,
         env_vars=env_vars,
-        files=files if files else None,
+        files=files if files else {},
         min_cpu=MIN_CPU,
         max_cpu=MAX_CPU,
         min_memory=MIN_MEMORY,
