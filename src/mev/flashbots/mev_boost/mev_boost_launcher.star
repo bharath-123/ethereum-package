@@ -210,7 +210,7 @@ def get_config(
         public_ports=public_ports,
         cmd=command,
         env_vars=env_vars,
-        files=files if files else None,
+        files=files if files else {},
         min_cpu=MIN_CPU,
         max_cpu=MAX_CPU,
         min_memory=MIN_MEMORY,
