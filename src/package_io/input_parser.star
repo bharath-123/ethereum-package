@@ -1648,6 +1648,8 @@ def get_default_mev_params(mev_type, preset):
         "mev_builder_prometheus_config": mev_builder_prometheus_config,
         "launch_adminer": launch_adminer,
         "mev_boost_timing_games_params": {
+            "timeout_get_header_ms": 950,
+            "late_in_slot_time_ms": 2000,
             "flashbots": {
                 "enable_timing_games": False,
                 "target_first_request_ms": 200,
