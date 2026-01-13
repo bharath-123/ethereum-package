@@ -303,26 +303,27 @@ def get_beacon_config(
     else:  # Public network
         cmd.append("--{}".format(network_params.network))
 
-    # Check if MEV relay is configured and use builder whitelist instead
+    # Check if builder relay URLs are configured for builder whitelist
+    # Use --builder-relay-url=<url> to specify the actual relay URL (not mev-boost)
     builder_whitelist_artifact = None
     if len(participant.cl_extra_params) > 0:
-        relay_url, filtered_params = extract_mev_relay_url_from_params(
+        relay_urls, filtered_params = extract_builder_relay_urls_from_params(
             participant.cl_extra_params
         )
-        if relay_url:
-            # Generate builder whitelist config
+        if relay_urls:
+            # Generate builder whitelist config with the relay URLs
             builder_whitelist_artifact = generate_builder_whitelist_config(
-                plan, beacon_service_name, [relay_url]
+                plan, beacon_service_name, relay_urls
             )
-            # Add the builder whitelist file flag instead of --http-mev-relay
+            # Add the builder whitelist file flag
             builder_whitelist_path = shared_utils.path_join(
                 BUILDER_WHITELIST_MOUNT_DIRPATH, BUILDER_WHITELIST_FILENAME
             )
             cmd.append("--builder-whitelist-file=" + builder_whitelist_path)
-            # Add the remaining params (without --http-mev-relay)
+            # Add the remaining params (without --builder-relay-url flags)
             cmd.extend([param for param in filtered_params])
         else:
-            # No MEV relay, just add all extra params
+            # No builder relay URLs, just add all extra params
             cmd.extend([param for param in participant.cl_extra_params])
 
     files = {
@@ -543,22 +544,39 @@ def generate_builder_whitelist_config(plan, service_name, relay_urls):
     return config_files_artifact_name
 
 
-def extract_mev_relay_url_from_params(cl_extra_params):
-    """Extract the MEV relay URL from cl_extra_params if present.
+def extract_builder_relay_urls_from_params(cl_extra_params):
+    """Extract builder relay URLs from cl_extra_params if present.
+    
+    Looks for --builder-relay-url=<url> parameters which specify the actual relay
+    URLs (not mev-boost URLs) to use in the builder whitelist.
+    
+    When builder relay URLs are found, also filters out --http-mev-relay since
+    the builder whitelist approach bypasses mev-boost.
     
     Args:
         cl_extra_params: List of extra CL parameters
     
     Returns:
-        Tuple of (relay_url or None, filtered_params without the --http-mev-relay flag)
+        Tuple of (list of relay_urls, filtered_params without the --builder-relay-url 
+        and --http-mev-relay flags)
     """
-    relay_url = None
+    relay_urls = []
     filtered_params = []
+    has_builder_relay = False
     
+    # First pass: check if we have builder relay URLs
     for param in cl_extra_params:
-        if param.startswith("--http-mev-relay="):
+        if param.startswith("--builder-relay-url="):
             relay_url = param.split("=", 1)[1]
-        else:
-            filtered_params.append(param)
+            relay_urls.append(relay_url)
+            has_builder_relay = True
     
-    return relay_url, filtered_params
+    # Second pass: filter params (remove --http-mev-relay only if using builder whitelist)
+    for param in cl_extra_params:
+        if param.startswith("--builder-relay-url="):
+            continue  # Already extracted
+        if has_builder_relay and param.startswith("--http-mev-relay="):
+            continue  # Skip mev-boost when using builder whitelist
+        filtered_params.append(param)
+    
+    return relay_urls, filtered_params

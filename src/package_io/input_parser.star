@@ -1977,6 +1977,17 @@ def enrich_mev_extra_params(parsed_arguments_dict, mev_prefix, mev_port, mev_typ
             participant["cl_extra_params"].append(
                 "--http-mev-relay={0}".format(mev_url)
             )
+            # Add the actual relay URL for builder whitelist (bypasses mev-boost)
+            if mev_type == constants.FLASHBOTS_MEV_TYPE:
+                relay_url = "http://mev-relay-api:9062"
+            elif mev_type == constants.HELIX_MEV_TYPE:
+                relay_url = "http://helix-relay:4040"
+            else:
+                relay_url = None
+            if relay_url:
+                participant["cl_extra_params"].append(
+                    "--builder-relay-url={0}".format(relay_url)
+                )
         if participant["vc_type"] == "prysm":
             participant["vc_extra_params"].append("--enable-builder")
         if participant["cl_type"] == "grandine":
