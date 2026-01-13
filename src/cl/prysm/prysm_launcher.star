@@ -5,8 +5,13 @@ cl_node_ready_conditions = import_module("../../cl/cl_node_ready_conditions.star
 cl_shared = import_module("../cl_shared.star")
 node_metrics = import_module("../../node_metrics_info.star")
 constants = import_module("../../package_io/constants.star")
+static_files = import_module("../../static_files/static_files.star")
 
 PRYSM_ENTRYPOINT_COMMAND = "/beacon-chain"
+
+# Builder whitelist config
+BUILDER_WHITELIST_FILENAME = "builder-whitelist.yaml"
+BUILDER_WHITELIST_MOUNT_DIRPATH = "/builder-config/"
 
 #  ---------------------------------- Beacon client -------------------------------------
 BEACON_DATA_DIRPATH_ON_SERVICE_CONTAINER = "/data/prysm/beacon-data/"
@@ -298,14 +303,36 @@ def get_beacon_config(
     else:  # Public network
         cmd.append("--{}".format(network_params.network))
 
+    # Check if MEV relay is configured and use builder whitelist instead
+    builder_whitelist_artifact = None
     if len(participant.cl_extra_params) > 0:
-        # we do the for loop as otherwise its a proto repeated array
-        cmd.extend([param for param in participant.cl_extra_params])
+        relay_url, filtered_params = extract_mev_relay_url_from_params(
+            participant.cl_extra_params
+        )
+        if relay_url:
+            # Generate builder whitelist config
+            builder_whitelist_artifact = generate_builder_whitelist_config(
+                plan, beacon_service_name, [relay_url]
+            )
+            # Add the builder whitelist file flag instead of --http-mev-relay
+            builder_whitelist_path = shared_utils.path_join(
+                BUILDER_WHITELIST_MOUNT_DIRPATH, BUILDER_WHITELIST_FILENAME
+            )
+            cmd.append("--builder-whitelist-file=" + builder_whitelist_path)
+            # Add the remaining params (without --http-mev-relay)
+            cmd.extend([param for param in filtered_params])
+        else:
+            # No MEV relay, just add all extra params
+            cmd.extend([param for param in participant.cl_extra_params])
 
     files = {
         constants.GENESIS_DATA_MOUNTPOINT_ON_CLIENTS: launcher.el_cl_genesis_data.files_artifact_uuid,
         constants.JWT_MOUNTPOINT_ON_CLIENTS: launcher.jwt_file,
     }
+    
+    # Mount builder whitelist config if generated
+    if builder_whitelist_artifact:
+        files[BUILDER_WHITELIST_MOUNT_DIRPATH] = builder_whitelist_artifact
     if network_params.perfect_peerdas_enabled and participant_index < 16:
         files[constants.NODE_KEY_MOUNTPOINT_ON_CLIENTS] = Directory(
             artifact_names=["node-key-file-{0}".format(participant_index + 1)]
@@ -478,3 +505,60 @@ def get_blobber_config(
             node_selectors=node_selectors,
         )
     return blobber_config
+
+
+def generate_builder_whitelist_config(plan, service_name, relay_urls):
+    """Generate builder whitelist config file for Prysm.
+    
+    Args:
+        plan: The Kurtosis plan
+        service_name: Name of the beacon service
+        relay_urls: List of relay URLs to add to the whitelist
+    
+    Returns:
+        The artifact name containing the builder whitelist config
+    """
+    builders = []
+    for url in relay_urls:
+        builders.append({
+            "URL": url,
+            "MinBid": 0,  # Set to 0 for testing
+        })
+    
+    template_data = {"Builders": builders}
+    
+    builder_whitelist_template = read_file(static_files.PRYSM_BUILDER_WHITELIST_FILEPATH)
+    template_and_data = shared_utils.new_template_and_data(
+        builder_whitelist_template, template_data
+    )
+    
+    template_and_data_by_rel_dest_filepath = {}
+    template_and_data_by_rel_dest_filepath[BUILDER_WHITELIST_FILENAME] = template_and_data
+    
+    config_files_artifact_name = plan.render_templates(
+        template_and_data_by_rel_dest_filepath,
+        "prysm-builder-whitelist-{0}".format(service_name),
+    )
+    
+    return config_files_artifact_name
+
+
+def extract_mev_relay_url_from_params(cl_extra_params):
+    """Extract the MEV relay URL from cl_extra_params if present.
+    
+    Args:
+        cl_extra_params: List of extra CL parameters
+    
+    Returns:
+        Tuple of (relay_url or None, filtered_params without the --http-mev-relay flag)
+    """
+    relay_url = None
+    filtered_params = []
+    
+    for param in cl_extra_params:
+        if param.startswith("--http-mev-relay="):
+            relay_url = param.split("=", 1)[1]
+        else:
+            filtered_params.append(param)
+    
+    return relay_url, filtered_params
