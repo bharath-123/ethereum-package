@@ -1,8 +1,8 @@
-constants = import_module("../../../package_io/constants.star")
-shared_utils = import_module("../../../shared_utils/shared_utils.star")
-reth_launcher_module = import_module("../../../el/reth/reth_launcher.star")
-el_context_module = import_module("../../../el/el_context.star")
-input_parser = import_module("../../../package_io/input_parser.star")
+constants = import_module("../../package_io/constants.star")
+shared_utils = import_module("../../shared_utils/shared_utils.star")
+reth_launcher_module = import_module("../../el/reth/reth_launcher.star")
+el_context_module = import_module("../../el/el_context.star")
+input_parser = import_module("../../package_io/input_parser.star")
 
 BUILDOOR_SERVICE_NAME = "buildoor"
 BUILDOOR_BUILDER_API_PORT = 9000
