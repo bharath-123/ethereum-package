@@ -51,6 +51,7 @@ flashbots_mev_relay = import_module(
     "./src/mev/flashbots/mev_relay/mev_relay_launcher.star"
 )
 helix_relay = import_module("./src/mev/helix/helix_relay_launcher.star")
+buildoor = import_module("./src/mev/buildoor/buildoor_launcher.star")
 mock_mev = import_module("./src/mev/flashbots/mock_mev/mock_mev_launcher.star")
 mev_custom_flood = import_module(
     "./src/mev/flashbots/mev_custom_flood/mev_custom_flood_launcher.star"
@@ -372,6 +373,7 @@ def run(plan, args={}):
         or args_with_right_defaults.mev_type == constants.MEV_RS_MEV_TYPE
         or args_with_right_defaults.mev_type == constants.COMMIT_BOOST_MEV_TYPE
         or args_with_right_defaults.mev_type == constants.HELIX_MEV_TYPE
+        or args_with_right_defaults.mev_type == constants.BUILDOOR_MEV_TYPE
     ):
         builder_cl_context = all_cl_contexts[-1]
         blocksim_uri = "http://{0}:{1}".format(
@@ -428,6 +430,24 @@ def run(plan, args={}):
                 global_tolerations,
                 el_cl_data_files_artifact_uuid,
             )
+        elif args_with_right_defaults.mev_type == constants.BUILDOOR_MEV_TYPE:
+            # Buildoor launches its own dedicated reth EL client
+            endpoint = buildoor.launch_buildoor(
+                plan,
+                mev_params,
+                beacon_uri,
+                jwt_file,
+                args_with_right_defaults.port_publisher,
+                num_participants,
+                global_node_selectors,
+                global_tolerations,
+                el_cl_data_files_artifact_uuid,
+                all_el_contexts,
+                network_params,
+                args_with_right_defaults.global_log_level,
+                persistent,
+                None,  # bootnodoor_enode - can be added if needed
+            )
         else:
             fail("Invalid MEV type")
 
@@ -451,6 +471,7 @@ def run(plan, args={}):
                     args_with_right_defaults.mev_type == constants.FLASHBOTS_MEV_TYPE
                     or args_with_right_defaults.mev_type == constants.MOCK_MEV_TYPE
                     or args_with_right_defaults.mev_type == constants.HELIX_MEV_TYPE
+                    or args_with_right_defaults.mev_type == constants.BUILDOOR_MEV_TYPE
                 ):
                     mev_boost_launcher = flashbots_mev_boost.new_mev_boost_launcher(
                         MEV_BOOST_SHOULD_CHECK_RELAY,

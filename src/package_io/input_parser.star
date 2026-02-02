@@ -228,6 +228,7 @@ def input_parser(plan, input_args):
         constants.MEV_RS_MEV_TYPE,
         constants.COMMIT_BOOST_MEV_TYPE,
         constants.HELIX_MEV_TYPE,
+        constants.BUILDOOR_MEV_TYPE,
     ):
         result = enrich_mev_extra_params(
             result,
@@ -239,7 +240,7 @@ def input_parser(plan, input_args):
         pass
     else:
         fail(
-            "Unsupported MEV type: {0}, please use 'mock', 'flashbots', 'mev-rs', 'commit-boost' or 'helix' type".format(
+            "Unsupported MEV type: {0}, please use 'mock', 'flashbots', 'mev-rs', 'commit-boost', 'helix' or 'buildoor' type".format(
                 result.get("mev_type")
             )
         )
@@ -1699,6 +1700,11 @@ def get_default_mev_params(mev_type, preset):
         mev_boost_image = constants.DEFAULT_FLASHBOTS_MEV_BOOST_IMAGE
         mev_builder_cl_image = DEFAULT_CL_IMAGES[constants.CL_TYPE.lighthouse]
         mev_builder_extra_data = "0x48656C6978"  # "Helix" in hex
+
+    if mev_type == constants.BUILDOOR_MEV_TYPE:
+        mev_relay_image = constants.DEFAULT_BUILDOOR_IMAGE
+        mev_builder_image = DEFAULT_EL_IMAGES[constants.EL_TYPE.reth]  # reth EL client for buildoor
+        mev_boost_image = constants.DEFAULT_FLASHBOTS_MEV_BOOST_IMAGE
 
     return {
         "mev_relay_image": mev_relay_image,

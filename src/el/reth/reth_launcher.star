@@ -124,6 +124,7 @@ def get_config(
             launcher.builder_type == constants.FLASHBOTS_MEV_TYPE
             or launcher.builder_type == constants.COMMIT_BOOST_MEV_TYPE
             or launcher.builder_type == constants.HELIX_MEV_TYPE
+            or launcher.builder_type == constants.BUILDOOR_MEV_TYPE
         ):
             additional_public_port_assignments[
                 constants.RBUILDER_PORT_ID
@@ -159,6 +160,7 @@ def get_config(
         launcher.builder_type == constants.FLASHBOTS_MEV_TYPE
         or launcher.builder_type == constants.COMMIT_BOOST_MEV_TYPE
         or launcher.builder_type == constants.HELIX_MEV_TYPE
+        or launcher.builder_type == constants.BUILDOOR_MEV_TYPE
     ):
         used_port_assignments[constants.RBUILDER_PORT_ID] = RBUILDER_PORT_NUM
         used_port_assignments[
@@ -191,6 +193,7 @@ def get_config(
                 if launcher.builder_type == constants.FLASHBOTS_MEV_TYPE
                 or launcher.builder_type == constants.COMMIT_BOOST_MEV_TYPE
                 or launcher.builder_type == constants.HELIX_MEV_TYPE
+                or launcher.builder_type == constants.BUILDOOR_MEV_TYPE
                 else ""
             ),
             "--ws",
@@ -287,6 +290,7 @@ def get_config(
         launcher.builder_type == constants.FLASHBOTS_MEV_TYPE
         or launcher.builder_type == constants.COMMIT_BOOST_MEV_TYPE
         or launcher.builder_type == constants.HELIX_MEV_TYPE
+        or launcher.builder_type == constants.BUILDOOR_MEV_TYPE
     ):
         image = launcher.mev_params.mev_builder_image
         cl_client_name = service_name.split("-")[4]
