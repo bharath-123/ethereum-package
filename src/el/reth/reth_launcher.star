@@ -54,13 +54,14 @@ def launch(
 ):
     # Extract CL client name from service name
     # Standard format: el-{index}-{el_type}-{cl_type}
-    # For buildoor: buildoor-el-reth (handle gracefully)
+    # Builder format: el-{index}-reth-builder-{cl_type}
     service_name_parts = service_name.split("-")
-    if len(service_name_parts) >= 4:
+    if len(service_name_parts) >= 5 and service_name_parts[3] == "builder":
+        # Builder participant: el-{index}-reth-builder-{cl_type}
+        cl_client_name = service_name_parts[4]
+    elif len(service_name_parts) >= 4:
+        # Regular participant: el-{index}-{el_type}-{cl_type}
         cl_client_name = service_name_parts[3]
-    elif "buildoor" in service_name.lower():
-        # Buildoor EL client doesn't have a CL client, use "buildoor" as placeholder
-        cl_client_name = "buildoor"
     else:
         # Fallback for other non-standard formats
         cl_client_name = "unknown"
@@ -301,10 +302,9 @@ def get_config(
         launcher.builder_type == constants.FLASHBOTS_MEV_TYPE
         or launcher.builder_type == constants.COMMIT_BOOST_MEV_TYPE
         or launcher.builder_type == constants.HELIX_MEV_TYPE
-        or launcher.builder_type == constants.BUILDOOR_MEV_TYPE
     ):
         image = launcher.mev_params.mev_builder_image
-        cl_client_name = service_name.split("-")[4]
+        # cl_client_name is already extracted above in the launch function
         cmd.append("--rbuilder.config=" + flashbots_rbuilder.MEV_FILE_PATH_ON_CONTAINER)
         cmd.append("--engine.persistence-threshold=0")
         cmd.append("--engine.memory-block-buffer-target=0")
@@ -324,6 +324,13 @@ def get_config(
                 ),
             }
         )
+    elif launcher.builder_type == constants.BUILDOOR_MEV_TYPE:
+        # Buildoor uses its own builder service, so reth EL client doesn't need rbuilder config
+        # But we still need the txpool flag to disable local transaction propagation
+        image = launcher.mev_params.mev_builder_image
+        cmd.append(
+            "--txpool.no-local-transactions-propagation"
+        )  # disable tx propagation so that builder will have juicy blocks
 
     config_args = {
         "image": image,

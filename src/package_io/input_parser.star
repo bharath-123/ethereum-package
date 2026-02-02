@@ -1704,6 +1704,10 @@ def get_default_mev_params(mev_type, preset):
     if mev_type == constants.BUILDOOR_MEV_TYPE:
         mev_relay_image = constants.DEFAULT_BUILDOOR_IMAGE
         mev_builder_image = DEFAULT_EL_IMAGES[constants.EL_TYPE.reth]  # reth EL client for buildoor
+        if preset == "minimal":
+            mev_builder_cl_image = DEFAULT_CL_IMAGES_MINIMAL[constants.CL_TYPE.lighthouse]
+        else:
+            mev_builder_cl_image = DEFAULT_CL_IMAGES[constants.CL_TYPE.lighthouse]
         mev_boost_image = constants.DEFAULT_FLASHBOTS_MEV_BOOST_IMAGE
 
     return {
@@ -2090,6 +2094,32 @@ def enrich_mev_extra_params(parsed_arguments_dict, mev_prefix, mev_port, mev_typ
             }
         )
         parsed_arguments_dict["participants"].append(mev_participant)
+
+    if mev_type == constants.BUILDOOR_MEV_TYPE:
+        mev_participant = default_participant()
+        # Use reth-builder to get the txpool flag, but buildoor-specific logic will skip rbuilder config
+        mev_participant["el_type"] = "reth-builder"
+        mev_participant.update(
+            {
+                "el_image": parsed_arguments_dict["mev_params"]["mev_builder_image"],
+                "cl_image": parsed_arguments_dict["mev_params"]["mev_builder_cl_image"],
+                "cl_log_level": parsed_arguments_dict["global_log_level"],
+                "cl_extra_params": [
+                    "--always-prepare-payload",
+                    "--prepare-payload-lookahead",
+                    "8000",
+                    "--disable-peer-scoring",
+                    "--supernode",
+                ]
+                + parsed_arguments_dict["mev_params"]["mev_builder_cl_extra_params"],
+                "el_extra_params": parsed_arguments_dict["mev_params"][
+                    "mev_builder_extra_args"
+                ],
+                "validator_count": 0,
+            }
+        )
+        parsed_arguments_dict["participants"].append(mev_participant)
+
     if mev_type == constants.MOCK_MEV_TYPE:
         parsed_arguments_dict["mev_params"]["mock_mev_image"] = parsed_arguments_dict[
             "mev_params"

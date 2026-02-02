@@ -431,22 +431,18 @@ def run(plan, args={}):
                 el_cl_data_files_artifact_uuid,
             )
         elif args_with_right_defaults.mev_type == constants.BUILDOOR_MEV_TYPE:
-            # Buildoor launches its own dedicated reth EL client
+            # Buildoor uses the dedicated CL-EL pair (lighthouse-reth) launched as a builder participant
+            builder_el_context = all_el_contexts[-1]
             endpoint = buildoor.launch_buildoor(
                 plan,
                 mev_params,
-                beacon_uri,
+                builder_cl_context,
+                builder_el_context,
                 jwt_file,
                 args_with_right_defaults.port_publisher,
                 num_participants,
                 global_node_selectors,
                 global_tolerations,
-                el_cl_data_files_artifact_uuid,
-                all_el_contexts,
-                network_params,
-                args_with_right_defaults.global_log_level,
-                persistent,
-                None,  # bootnodoor_enode - can be added if needed
             )
         else:
             fail("Invalid MEV type")
