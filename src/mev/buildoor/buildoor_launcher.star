@@ -88,6 +88,7 @@ def launch_buildoor(
     # Build command for buildoor
     cmd = [
         "run",
+        "--log-level=debug",
         "--builder-privkey", constants.DEFAULT_MEV_SECRET_KEY,
         "--cl-client", beacon_uri,
         "--el-engine-api", el_engine_api_uri,
