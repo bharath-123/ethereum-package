@@ -6,13 +6,20 @@ input_parser = import_module("../../package_io/input_parser.star")
 
 BUILDOOR_SERVICE_NAME = "buildoor"
 BUILDOOR_BUILDER_API_PORT = 9000
+BUILDOOR_API_PORT = 8080
 BUILDOOR_EL_SERVICE_NAME = "buildoor-el-reth"
 
 HTTP_PORT_ID = "http"
+API_PORT_ID = "api"
 
 USED_PORTS = {
     HTTP_PORT_ID: shared_utils.new_port_spec(
         BUILDOOR_BUILDER_API_PORT,
+        shared_utils.TCP_PROTOCOL,
+        shared_utils.HTTP_APPLICATION_PROTOCOL,
+    ),
+    API_PORT_ID: shared_utils.new_port_spec(
+        BUILDOOR_API_PORT,
         shared_utils.TCP_PROTOCOL,
         shared_utils.HTTP_APPLICATION_PROTOCOL,
     ),
@@ -141,6 +148,16 @@ def launch_buildoor(
         0,
     )
     
+    # Add public port for API port (8080) - use port_index 1 for the second port
+    if port_publisher.mev_enabled:
+        api_public_ports = shared_utils.get_mev_public_port(
+            port_publisher,
+            API_PORT_ID,
+            index,
+            1,
+        )
+        public_ports.update(api_public_ports)
+    
     # Build command for buildoor
     cmd = [
         "run",
@@ -150,6 +167,7 @@ def launch_buildoor(
         "--el-jwt-secret", constants.JWT_MOUNT_PATH_ON_CONTAINER,
         "--builder-api-enabled",
         "--builder-api-port", str(BUILDOOR_BUILDER_API_PORT),
+        "--api-port", str(BUILDOOR_API_PORT),
     ]
     
     buildoor_service = plan.add_service(
