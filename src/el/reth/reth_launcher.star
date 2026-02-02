@@ -52,7 +52,18 @@ def launch(
     bootnodoor_enode=None,
     el_binary_artifact=None,
 ):
-    cl_client_name = service_name.split("-")[3]
+    # Extract CL client name from service name
+    # Standard format: el-{index}-{el_type}-{cl_type}
+    # For buildoor: buildoor-el-reth (handle gracefully)
+    service_name_parts = service_name.split("-")
+    if len(service_name_parts) >= 4:
+        cl_client_name = service_name_parts[3]
+    elif "buildoor" in service_name.lower():
+        # Buildoor EL client doesn't have a CL client, use "buildoor" as placeholder
+        cl_client_name = "buildoor"
+    else:
+        # Fallback for other non-standard formats
+        cl_client_name = "unknown"
 
     config = get_config(
         plan,
