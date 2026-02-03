@@ -329,6 +329,8 @@ def get_config(
         cmd.append(
             "--txpool.no-local-transactions-propagation"
         )  # disable tx propagation so that builder will have juicy blocks
+        # Set miner extraData (graffiti) to identify blocks built by buildoor
+        cmd.append("--miner.extraData=buildoor-block")
 
     config_args = {
         "image": image,
