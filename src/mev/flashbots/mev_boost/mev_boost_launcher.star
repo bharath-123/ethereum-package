@@ -93,7 +93,7 @@ def get_config(
             "GENESIS_FORK_VERSION": constants.GENESIS_FORK_VERSION,
             "GENESIS_TIMESTAMP": "{0}".format(genesis_timestamp),
             "BOOST_LISTEN_ADDR": "0.0.0.0:{0}".format(constants.MEV_BOOST_PORT),
-            "SKIP_RELAY_SIGNATURE_CHECK": "1",
+            "SKIP_RELAY_SIGNATURE_CHECK": "0",
             "SLOT_SEC": str(seconds_per_slot),
             "RELAYS": "{0}?id={1}-{2}".format(
                 mev_boost_launcher.relay_end_points[0],
