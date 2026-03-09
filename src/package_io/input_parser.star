@@ -2198,10 +2198,19 @@ def enrich_mev_extra_params(parsed_arguments_dict, mev_prefix, mev_port, mev_typ
         )
         parsed_arguments_dict["participants"].append(mev_participant)
     if mev_type == constants.BUILDOOR_MEV_TYPE:
+        buildoor_el_type = parsed_arguments_dict["buildoor_params"]["el_type"]
+        el_image = DEFAULT_EL_IMAGES.get(buildoor_el_type, "")
+        if el_image == "":
+            fail(
+                "Unsupported el_type for buildoor: {0}".format(buildoor_el_type)
+            )
+        cl_image = DEFAULT_CL_IMAGES.get("lighthouse", "")
         mev_participant = default_participant()
-        mev_participant["el_type"] = parsed_arguments_dict["buildoor_params"]["el_type"]
+        mev_participant["el_type"] = buildoor_el_type
         mev_participant.update(
             {
+                "el_image": el_image,
+                "cl_image": cl_image,
                 "cl_log_level": parsed_arguments_dict["global_log_level"],
                 "cl_extra_params": [
                     "--always-prepare-payload",
