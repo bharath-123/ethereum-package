@@ -222,6 +222,7 @@ buildoor_params:
   builder_api: true
   epbs_builder: true
   extra_args: []
+  el_type: geth
 bootnodoor_params:
   image: ethpandaops/bootnodoor:latest
   min_cpu: 100

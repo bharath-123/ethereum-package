@@ -457,6 +457,7 @@ SUBCATEGORY_PARAMS = {
         "extra_args",
         "builder_api",
         "epbs_builder",
+        "el_type",
     ],
 }
 

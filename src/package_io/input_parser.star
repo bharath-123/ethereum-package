@@ -987,6 +987,7 @@ def input_parser(plan, input_args):
             extra_args=result["buildoor_params"]["extra_args"],
             builder_api=result["buildoor_params"]["builder_api"],
             epbs_builder=result["buildoor_params"]["epbs_builder"],
+            el_type=result["buildoor_params"]["el_type"],
         ),
     )
 
@@ -2000,6 +2001,7 @@ def get_default_buildoor_params():
         "extra_args": [],
         "builder_api": True,
         "epbs_builder": True,
+        "el_type": "geth",
     }
 
 
@@ -2190,6 +2192,22 @@ def enrich_mev_extra_params(parsed_arguments_dict, mev_prefix, mev_port, mev_typ
                 + parsed_arguments_dict["mev_params"]["mev_builder_cl_extra_params"],
                 "el_extra_params": parsed_arguments_dict["mev_params"][
                     "mev_builder_extra_args"
+                ],
+                "validator_count": 0,
+            }
+        )
+        parsed_arguments_dict["participants"].append(mev_participant)
+    if mev_type == constants.BUILDOOR_MEV_TYPE:
+        mev_participant = default_participant()
+        mev_participant["el_type"] = parsed_arguments_dict["buildoor_params"]["el_type"]
+        mev_participant.update(
+            {
+                "cl_log_level": parsed_arguments_dict["global_log_level"],
+                "cl_extra_params": [
+                    "--always-prepare-payload",
+                    "--prepare-payload-lookahead",
+                    "8000",
+                    "--disable-peer-scoring",
                 ],
                 "validator_count": 0,
             }
