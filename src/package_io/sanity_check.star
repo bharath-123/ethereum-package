@@ -458,6 +458,8 @@ SUBCATEGORY_PARAMS = {
         "builder_api",
         "epbs_builder",
         "el_type",
+        "cl_type",
+        "cl_image",
     ],
 }
 

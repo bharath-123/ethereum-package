@@ -2002,6 +2002,8 @@ def get_default_buildoor_params():
         "builder_api": True,
         "epbs_builder": True,
         "el_type": "geth",
+        "cl_type": "prysm",
+        "cl_image": "",
     }
 
 
@@ -2204,20 +2206,22 @@ def enrich_mev_extra_params(parsed_arguments_dict, mev_prefix, mev_port, mev_typ
             fail(
                 "Unsupported el_type for buildoor: {0}".format(buildoor_el_type)
             )
-        cl_image = DEFAULT_CL_IMAGES.get("lighthouse", "")
+        buildoor_cl_type = parsed_arguments_dict["buildoor_params"]["cl_type"]
+        buildoor_cl_image = parsed_arguments_dict["buildoor_params"]["cl_image"]
+        if buildoor_cl_image == "":
+            buildoor_cl_image = DEFAULT_CL_IMAGES.get(buildoor_cl_type, "")
+        if buildoor_cl_image == "":
+            fail(
+                "Unsupported cl_type for buildoor: {0}".format(buildoor_cl_type)
+            )
         mev_participant = default_participant()
         mev_participant["el_type"] = buildoor_el_type
+        mev_participant["cl_type"] = buildoor_cl_type
         mev_participant.update(
             {
                 "el_image": el_image,
-                "cl_image": cl_image,
+                "cl_image": buildoor_cl_image,
                 "cl_log_level": parsed_arguments_dict["global_log_level"],
-                "cl_extra_params": [
-                    "--always-prepare-payload",
-                    "--prepare-payload-lookahead",
-                    "8000",
-                    "--disable-peer-scoring",
-                ],
                 "validator_count": 0,
             }
         )
