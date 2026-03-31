@@ -373,10 +373,7 @@ def run(plan, args={}):
         args_with_right_defaults.mev_type
         and args_with_right_defaults.mev_type == constants.BUILDOOR_MEV_TYPE
     ):
-        beacon_uri = "http://{0}:{1}".format(
-            all_cl_contexts[-1].ip_address,
-            all_cl_contexts[-1].http_port,
-        )
+        beacon_uri = all_cl_contexts[-1].beacon_http_url
         el_rpc_uri = "http://{0}:{1}".format(
             all_el_contexts[-1].ip_addr,
             all_el_contexts[-1].rpc_port_num,
