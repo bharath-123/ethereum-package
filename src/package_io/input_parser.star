@@ -2002,6 +2002,7 @@ def get_default_buildoor_params():
         "builder_api": True,
         "epbs_builder": True,
         "el_type": "geth",
+        "el_image": "",
         "cl_type": "prysm",
         "cl_image": "",
     }
@@ -2201,7 +2202,9 @@ def enrich_mev_extra_params(parsed_arguments_dict, mev_prefix, mev_port, mev_typ
         parsed_arguments_dict["participants"].append(mev_participant)
     if mev_type == constants.BUILDOOR_MEV_TYPE:
         buildoor_el_type = parsed_arguments_dict["buildoor_params"]["el_type"]
-        el_image = DEFAULT_EL_IMAGES.get(buildoor_el_type, "")
+        el_image = parsed_arguments_dict["buildoor_params"]["el_image"]
+        if el_image == "":
+            el_image = DEFAULT_EL_IMAGES.get(buildoor_el_type, "")
         if el_image == "":
             fail(
                 "Unsupported el_type for buildoor: {0}".format(buildoor_el_type)
