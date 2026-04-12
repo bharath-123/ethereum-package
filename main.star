@@ -418,7 +418,7 @@ def run(plan, args={}):
             el_rpc_uri,
             engine_rpc_uri,
             jwt_file,
-            prefunded_accounts[0].private_key,
+            prefunded_accounts[1].private_key,
             args_with_right_defaults.buildoor_params,
             global_node_selectors,
             global_tolerations,
