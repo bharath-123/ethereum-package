@@ -65,6 +65,7 @@ get_prefunded_accounts = import_module(
 spamoor = import_module("./src/spamoor/spamoor.star")
 slashoor = import_module("./src/slashoor/slashoor_launcher.star")
 zkboost = import_module("./src/zkboost/zkboost_launcher.star")
+bid_observoor = import_module("./src/bid_observoor/bid_observoor_launcher.star")
 
 GRAFANA_USER = "admin"
 GRAFANA_PASSWORD = "admin"
@@ -1065,6 +1066,18 @@ def run(plan, args={}):
             )
             prometheus_additional_metrics_jobs.extend(zkboost_metrics_jobs)
             plan.print("Successfully launched zkboost")
+        elif additional_service == "bid_observoor":
+            plan.print("Launching bid-observoor")
+            bid_observoor.launch_bid_observoor(
+                plan,
+                all_cl_contexts,
+                args_with_right_defaults.bid_observoor_params,
+                global_node_selectors,
+                global_tolerations,
+                args_with_right_defaults.port_publisher,
+                index,
+            )
+            plan.print("Successfully launched bid-observoor")
         else:
             fail("Invalid additional service %s" % (additional_service))
     if launch_prometheus_grafana:

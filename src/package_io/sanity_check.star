@@ -454,6 +454,16 @@ SUBCATEGORY_PARAMS = {
         "builder_api",
         "epbs_builder",
     ],
+    "bid_observoor_params": [
+        "image",
+        "min_cpu",
+        "max_cpu",
+        "min_mem",
+        "max_mem",
+        "beacon_url",
+        "extra_args",
+        "extra_env_vars",
+    ],
 }
 
 ADDITIONAL_SERVICES_PARAMS = [
@@ -484,6 +494,7 @@ ADDITIONAL_SERVICES_PARAMS = [
     "slashoor",
     "spamoor",
     "zkboost",
+    "bid_observoor",
 ]
 
 ADDITIONAL_CATEGORY_PARAMS = {

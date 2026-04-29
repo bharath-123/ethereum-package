@@ -95,6 +95,7 @@ ATTR_TO_BE_SKIPPED_AT_ROOT = (
     "mempool_bridge_params",
     "zkboost_params",
     "buildoor_params",
+    "bid_observoor_params",
     "ethereum_genesis_generator_params",
 )
 
@@ -137,6 +138,7 @@ def input_parser(plan, input_args):
     result["mempool_bridge_params"] = get_default_mempool_bridge_params()
     result["zkboost_params"] = get_default_zkboost_params()
     result["buildoor_params"] = get_default_buildoor_params()
+    result["bid_observoor_params"] = get_default_bid_observoor_params()
 
     if constants.NETWORK_NAME.shadowfork in result["network_params"]["network"]:
         shadow_base = result["network_params"]["network"].split("-shadowfork")[0]
@@ -242,6 +244,10 @@ def input_parser(plan, input_args):
             for sub_attr in input_args["buildoor_params"]:
                 sub_value = input_args["buildoor_params"][sub_attr]
                 result["buildoor_params"][sub_attr] = sub_value
+        elif attr == "bid_observoor_params":
+            for sub_attr in input_args["bid_observoor_params"]:
+                sub_value = input_args["bid_observoor_params"][sub_attr]
+                result["bid_observoor_params"][sub_attr] = sub_value
 
     if result.get("snooper_enabled"):
         plan.print(
@@ -1084,6 +1090,16 @@ def input_parser(plan, input_args):
             extra_args=result["buildoor_params"]["extra_args"],
             builder_api=result["buildoor_params"]["builder_api"],
             epbs_builder=result["buildoor_params"]["epbs_builder"],
+        ),
+        bid_observoor_params=struct(
+            image=result["bid_observoor_params"]["image"],
+            min_cpu=result["bid_observoor_params"]["min_cpu"],
+            max_cpu=result["bid_observoor_params"]["max_cpu"],
+            min_mem=result["bid_observoor_params"]["min_mem"],
+            max_mem=result["bid_observoor_params"]["max_mem"],
+            beacon_url=result["bid_observoor_params"]["beacon_url"],
+            extra_args=result["bid_observoor_params"]["extra_args"],
+            extra_env_vars=result["bid_observoor_params"]["extra_env_vars"],
         ),
     )
 
@@ -2141,6 +2157,20 @@ def get_default_buildoor_params():
         "extra_args": [],
         "builder_api": True,
         "epbs_builder": True,
+    }
+
+
+def get_default_bid_observoor_params():
+    return {
+        "image": constants.DEFAULT_BID_OBSERVOOR_IMAGE,
+        "min_cpu": 50,
+        "max_cpu": 500,
+        "min_mem": 64,
+        "max_mem": 256,
+        # Empty => use the first CL participant's beacon URL at launch time.
+        "beacon_url": "",
+        "extra_args": [],
+        "extra_env_vars": {},
     }
 
 
