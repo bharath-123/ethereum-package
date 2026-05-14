@@ -54,6 +54,9 @@ def launch_buildoor(
     if buildoor_params.epbs_builder:
         cmd.append("--epbs-enabled")
 
+    if buildoor_params.spamoor:
+        cmd.append("--spamoor")
+
     cmd += buildoor_params.extra_args
 
     buildoor_service = plan.add_service(
