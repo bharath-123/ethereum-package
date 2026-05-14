@@ -22,6 +22,7 @@ def launch_buildoor(
     global_node_selectors,
     global_tolerations,
     builder_bls_secret_key=None,
+    cl_contexts=None,
 ):
     tolerations = shared_utils.get_tolerations(global_tolerations=global_tolerations)
 
@@ -56,6 +57,13 @@ def launch_buildoor(
 
     if buildoor_params.spamoor:
         cmd.append("--spamoor")
+        if cl_contexts != None:
+            bootnodes = []
+            for ctx in cl_contexts:
+                if ctx.enr:
+                    bootnodes.append(ctx.enr)
+            if bootnodes:
+                cmd.append("--spamoor-bootnodes=" + ",".join(bootnodes))
 
     cmd += buildoor_params.extra_args
 

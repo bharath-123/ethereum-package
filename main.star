@@ -425,6 +425,7 @@ def run(plan, args={}):
             global_node_selectors,
             global_tolerations,
             builder_bls_secret_key,
+            all_cl_contexts,
         )
         mev_endpoints.append(endpoint)
         mev_endpoint_names.append(constants.BUILDOOR_MEV_TYPE)
