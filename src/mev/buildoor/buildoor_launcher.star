@@ -10,6 +10,10 @@ BUILDOOR_CONFIG_FILENAME = "config.yaml"
 BUILDOOR_CONFIG_MOUNT_DIRPATH = "/config"
 BUILDOOR_CONFIG_ARTIFACT_NAME = "buildoor-config"
 
+VALIDATOR_RANGES_MOUNT_DIRPATH = "/validator-ranges"
+VALIDATOR_RANGES_ARTIFACT_NAME = "validator-ranges"
+VALIDATOR_RANGES_FILENAME = "validator-ranges.yaml"
+
 MIN_CPU = 100
 MAX_CPU = 1000
 MIN_MEMORY = 128
@@ -54,6 +58,9 @@ def launch_buildoor(
         "LifecycleEnabled": buildoor_params.lifecycle_enabled,
         "BuilderAPIEnabled": buildoor_params.builder_api,
         "BuilderAPIPort": BUILDOOR_BUILDER_API_PORT,
+        "ValidatorRangesFile": shared_utils.path_join(
+            VALIDATOR_RANGES_MOUNT_DIRPATH, VALIDATOR_RANGES_FILENAME
+        ),
     }
 
     config_artifact = plan.render_templates(
@@ -83,6 +90,7 @@ def launch_buildoor(
             files={
                 constants.JWT_MOUNTPOINT_ON_CLIENTS: jwt_file,
                 BUILDOOR_CONFIG_MOUNT_DIRPATH: config_artifact,
+                VALIDATOR_RANGES_MOUNT_DIRPATH: VALIDATOR_RANGES_ARTIFACT_NAME,
             },
             min_cpu=MIN_CPU,
             max_cpu=MAX_CPU,
