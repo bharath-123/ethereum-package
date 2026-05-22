@@ -1,9 +1,14 @@
 constants = import_module("../../package_io/constants.star")
 shared_utils = import_module("../../shared_utils/shared_utils.star")
+static_files = import_module("../../static_files/static_files.star")
 
 BUILDOOR_SERVICE_NAME = "buildoor"
-BUILDOOR_API_PORT = 8080
-BUILDOOR_BUILDER_API_PORT = 9000
+BUILDOOR_API_PORT = 8082
+BUILDOOR_BUILDER_API_PORT = 18550
+
+BUILDOOR_CONFIG_FILENAME = "config.yaml"
+BUILDOOR_CONFIG_MOUNT_DIRPATH = "/config"
+BUILDOOR_CONFIG_ARTIFACT_NAME = "buildoor-config"
 
 MIN_CPU = 100
 MAX_CPU = 1000
@@ -36,25 +41,28 @@ def launch_buildoor(
     else:
         builder_bls_key = constants.DEFAULT_MEV_SECRET_KEY[2:]
 
-    cmd = [
-        "run",
-        "--cl-client={0}".format(beacon_uri),
-        "--el-rpc={0}".format(el_rpc_uri),
-        "--el-engine-api={0}".format(engine_rpc_uri),
-        "--el-jwt-secret=" + constants.JWT_MOUNT_PATH_ON_CONTAINER,
-        "--builder-privkey={0}".format(builder_bls_key),
-        "--wallet-privkey={0}".format(wallet_key),
-        "--api-port={0}".format(BUILDOOR_API_PORT),
-        "--builder-api-port={0}".format(BUILDOOR_BUILDER_API_PORT),
-    ]
+    config_template = read_file(static_files.BUILDOOR_CONFIG_FILEPATH)
+    template_data = {
+        "CLClient": beacon_uri,
+        "ELEngineAPI": engine_rpc_uri,
+        "ELJWTSecret": constants.JWT_MOUNT_PATH_ON_CONTAINER,
+        "ELRPC": el_rpc_uri,
+        "BuilderPrivkey": builder_bls_key,
+        "WalletPrivkey": wallet_key,
+        "APIPort": BUILDOOR_API_PORT,
+        "EPBSEnabled": buildoor_params.epbs_builder,
+        "BuilderAPIEnabled": buildoor_params.builder_api,
+        "BuilderAPIPort": BUILDOOR_BUILDER_API_PORT,
+    }
 
-    if buildoor_params.builder_api:
-        cmd.append("--builder-api-enabled")
+    config_artifact = plan.render_templates(
+        {BUILDOOR_CONFIG_FILENAME: shared_utils.new_template_and_data(config_template, template_data)},
+        BUILDOOR_CONFIG_ARTIFACT_NAME,
+    )
 
-    if buildoor_params.epbs_builder:
-        cmd.append("--epbs-enabled")
-
-    cmd += buildoor_params.extra_args
+    config_file_path = shared_utils.path_join(
+        BUILDOOR_CONFIG_MOUNT_DIRPATH, BUILDOOR_CONFIG_FILENAME
+    )
 
     buildoor_service = plan.add_service(
         name=BUILDOOR_SERVICE_NAME,
@@ -70,9 +78,10 @@ def launch_buildoor(
                     number=BUILDOOR_BUILDER_API_PORT, transport_protocol="TCP"
                 ),
             },
-            cmd=cmd,
+            cmd=["run", "--config", config_file_path],
             files={
                 constants.JWT_MOUNTPOINT_ON_CLIENTS: jwt_file,
+                BUILDOOR_CONFIG_MOUNT_DIRPATH: config_artifact,
             },
             min_cpu=MIN_CPU,
             max_cpu=MAX_CPU,

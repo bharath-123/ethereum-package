@@ -128,6 +128,10 @@ FLASHBOTS_RBUILDER_CONFIG_FILEPATH = (
     STATIC_FILES_DIRPATH + "/mev/flashbots/mev_builder/config.toml.tmpl"
 )
 
+BUILDOOR_CONFIG_FILEPATH = (
+    STATIC_FILES_DIRPATH + "/mev/buildoor/config.yaml.tmpl"
+)
+
 COMMIT_BOOST_CONFIG_FILEPATH = (
     STATIC_FILES_DIRPATH + "/mev/commit-boost/cb-config.toml.tmpl"
 )
