@@ -5,6 +5,10 @@ BUILDOOR_SERVICE_NAME = "buildoor"
 BUILDOOR_API_PORT = 8080
 BUILDOOR_BUILDER_API_PORT = 9000
 
+VALIDATOR_RANGES_MOUNT_DIRPATH = "/validator-ranges"
+VALIDATOR_RANGES_ARTIFACT_NAME = "validator-ranges"
+VALIDATOR_RANGES_FILE_PATH = VALIDATOR_RANGES_MOUNT_DIRPATH + "/validator-ranges.yaml"
+
 MIN_CPU = 100
 MAX_CPU = 1000
 MIN_MEMORY = 128
@@ -54,6 +58,7 @@ def launch_buildoor(
     if buildoor_params.epbs_builder:
         cmd.append("--epbs-enabled")
 
+    cmd.append("--validator-ranges-file=" + VALIDATOR_RANGES_FILE_PATH)
     cmd += buildoor_params.extra_args
 
     buildoor_service = plan.add_service(
@@ -73,6 +78,7 @@ def launch_buildoor(
             cmd=cmd,
             files={
                 constants.JWT_MOUNTPOINT_ON_CLIENTS: jwt_file,
+                VALIDATOR_RANGES_MOUNT_DIRPATH: VALIDATOR_RANGES_ARTIFACT_NAME,
             },
             min_cpu=MIN_CPU,
             max_cpu=MAX_CPU,
