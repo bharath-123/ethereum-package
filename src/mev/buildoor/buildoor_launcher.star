@@ -51,6 +51,7 @@ def launch_buildoor(
         "WalletPrivkey": wallet_key,
         "APIPort": BUILDOOR_API_PORT,
         "EPBSEnabled": buildoor_params.epbs_builder,
+        "LifecycleEnabled": buildoor_params.lifecycle_enabled,
         "BuilderAPIEnabled": buildoor_params.builder_api,
         "BuilderAPIPort": BUILDOOR_BUILDER_API_PORT,
     }

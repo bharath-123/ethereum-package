@@ -1118,6 +1118,7 @@ def input_parser(plan, input_args):
             image=result["buildoor_params"]["image"],
             builder_api=result["buildoor_params"]["builder_api"],
             epbs_builder=result["buildoor_params"]["epbs_builder"],
+            lifecycle_enabled=result["buildoor_params"]["lifecycle_enabled"],
         ),
     )
 
@@ -2285,6 +2286,7 @@ def get_default_buildoor_params():
         "image": constants.DEFAULT_BUILDOOR_IMAGE,
         "builder_api": True,
         "epbs_builder": True,
+        "lifecycle_enabled": False,
     }
 
 

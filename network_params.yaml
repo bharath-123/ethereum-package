@@ -235,7 +235,7 @@ buildoor_params:
   image: ethpandaops/buildoor:main
   builder_api: true
   epbs_builder: true
-  extra_args: []
+  lifecycle_enabled: false
 bootnodoor_params:
   image: ethpandaops/bootnodoor:latest
   min_cpu: 100

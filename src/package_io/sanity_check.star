@@ -466,6 +466,7 @@ SUBCATEGORY_PARAMS = {
         "image",
         "builder_api",
         "epbs_builder",
+        "lifecycle_enabled",
     ],
 }
 
