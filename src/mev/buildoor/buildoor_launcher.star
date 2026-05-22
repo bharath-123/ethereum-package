@@ -3,8 +3,8 @@ shared_utils = import_module("../../shared_utils/shared_utils.star")
 static_files = import_module("../../static_files/static_files.star")
 
 BUILDOOR_SERVICE_NAME = "buildoor"
-BUILDOOR_API_PORT = 8082
-BUILDOOR_BUILDER_API_PORT = 18550
+BUILDOOR_API_PORT = 8080
+BUILDOOR_BUILDER_API_PORT = 9000
 
 BUILDOOR_CONFIG_FILENAME = "config.yaml"
 BUILDOOR_CONFIG_MOUNT_DIRPATH = "/config"
