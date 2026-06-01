@@ -14,6 +14,7 @@ input_parser = import_module("../package_io/input_parser.star")
 shared_utils = import_module("../shared_utils/shared_utils.star")
 
 snooper_el_launcher = import_module("../snooper/snooper_el_launcher.star")
+buildoor = import_module("../mev/buildoor/buildoor_launcher.star")
 
 cl_context_BOOTNODE = None
 
@@ -145,6 +146,19 @@ def launch(
     )
     network_name = shared_utils.get_network_name(network_params.network)
 
+    # If buildoor is running with its builder API enabled, expose its builder
+    # endpoint so prysm beacon nodes can connect to it directly (post-ePBS path)
+    # via the --builder-urls flag. The buildoor service name and port are
+    # deterministic, so the URL can be derived without waiting for the launch.
+    buildoor_builder_url = None
+    if (
+        args_with_right_defaults.mev_type == constants.BUILDOOR_MEV_TYPE
+        and args_with_right_defaults.buildoor_params.builder_api
+    ):
+        buildoor_builder_url = "http://{0}:{1}".format(
+            buildoor.BUILDOOR_SERVICE_NAME, buildoor.BUILDOOR_BUILDER_API_PORT
+        )
+
     cl_service_configs = {}
     cl_participant_info = {}
     for index, participant in enumerate(args_with_right_defaults.participants):
@@ -261,6 +275,11 @@ def launch(
 
         cl_binary_artifact = binary_artifacts.get(index, {}).get("cl", None)
 
+        # Only prysm consumes the buildoor builder endpoint (via --builder-urls).
+        cl_extra_kwargs = {}
+        if cl_type == constants.CL_TYPE.prysm and buildoor_builder_url != None:
+            cl_extra_kwargs["builder_api_url"] = buildoor_builder_url
+
         if index == 0:
             cl_context = launch_method(
                 plan,
@@ -287,6 +306,7 @@ def launch(
                 otel_otlp_grpc_url,
                 bootnode_enr_override,
                 cl_binary_artifact,
+                **cl_extra_kwargs
             )
 
             blobber_config = get_blobber_config(
@@ -340,6 +360,7 @@ def launch(
                 otel_otlp_grpc_url,
                 bootnode_enr_override,
                 cl_binary_artifact,
+                **cl_extra_kwargs
             )
 
             cl_participant_info[cl_service_name] = {
