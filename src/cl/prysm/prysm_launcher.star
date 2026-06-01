@@ -246,7 +246,13 @@ def get_beacon_config(
 
     # Connect directly to a post-ePBS (Gloas) builder when one is provided
     # (e.g. buildoor with its builder API enabled).
-    if builder_api_url != None:
+    # HACK: this specific image crashes on startup with --builder-urls set, so
+    # skip the flag for it.
+    if (
+        builder_api_url != None
+        and participant.cl_image
+        != "ethpandaops/prysm-beacon-chain:bharath-123-buildoor-apis"
+    ):
         cmd.append("--builder-urls=" + builder_api_url)
 
     supernode_cmd = [
