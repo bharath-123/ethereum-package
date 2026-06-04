@@ -81,7 +81,12 @@ def get_config(
 
     # Connect directly to a post-ePBS (Gloas) builder when one is provided
     # (e.g. buildoor with its builder API enabled).
-    if builder_api_url != None:
+    # HACK: this specific image crashes on startup with --builder-urls set, so
+    # skip the flag for it.
+    if (
+        builder_api_url != None
+        and image != "ethpandaops/prysm-validator:bharath-123-buildoor-apis"
+    ):
         cmd.append("--builder-urls=" + builder_api_url)
 
     keymanager_api_cmd = [
