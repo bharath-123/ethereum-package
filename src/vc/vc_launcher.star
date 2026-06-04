@@ -41,6 +41,7 @@ def get_vc_config(
     tempo_otlp_grpc_url=None,
     otel_otlp_grpc_url=None,
     vc_binary_artifact=None,
+    builder_api_url=None,
 ):
     if node_keystore_files == None:
         return None
@@ -193,6 +194,7 @@ def get_vc_config(
             extra_files_artifacts=extra_files_artifacts,
             otel_otlp_grpc_url=otel_otlp_grpc_url,
             vc_binary_artifact=vc_binary_artifact,
+            builder_api_url=builder_api_url,
         )
     elif vc_type == constants.VC_TYPE.vero:
         if remote_signer_context == None:

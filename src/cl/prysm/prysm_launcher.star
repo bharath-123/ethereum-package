@@ -56,7 +56,6 @@ def launch(
     otel_otlp_grpc_url=None,
     bootnode_enr_override=None,
     cl_binary_artifact=None,
-    builder_api_url=None,
 ):
     beacon_config = get_beacon_config(
         plan,
@@ -83,7 +82,6 @@ def launch(
         otel_otlp_grpc_url,
         bootnode_enr_override,
         cl_binary_artifact,
-        builder_api_url,
     )
 
     beacon_service = plan.add_service(beacon_service_name, beacon_config)
@@ -126,7 +124,6 @@ def get_beacon_config(
     otel_otlp_grpc_url=None,
     bootnode_enr_override=None,
     cl_binary_artifact=None,
-    builder_api_url=None,
 ):
     log_level = input_parser.get_client_log_level_or_default(
         participant.cl_log_level, global_log_level, VERBOSITY_LEVELS
@@ -243,17 +240,6 @@ def get_beacon_config(
     if el_context != None:
         cmd.append("--execution-endpoint=" + EXECUTION_ENGINE_ENDPOINT)
         cmd.append("--jwt-secret=" + constants.JWT_MOUNT_PATH_ON_CONTAINER)
-
-    # Connect directly to a post-ePBS (Gloas) builder when one is provided
-    # (e.g. buildoor with its builder API enabled).
-    # HACK: this specific image crashes on startup with --builder-urls set, so
-    # skip the flag for it.
-    if (
-        builder_api_url != None
-        and participant.cl_image
-        != "ethpandaops/prysm-beacon-chain:bharath-123-buildoor-apis"
-    ):
-        cmd.append("--builder-urls=" + builder_api_url)
 
     supernode_cmd = [
         "--subscribe-all-data-subnets=true",

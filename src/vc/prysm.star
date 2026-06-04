@@ -29,6 +29,7 @@ def get_config(
     extra_files_artifacts,
     otel_otlp_grpc_url=None,
     vc_binary_artifact=None,
+    builder_api_url=None,
 ):
     validator_keys_dirpath = shared_utils.path_join(
         constants.VALIDATOR_KEYS_DIRPATH_ON_SERVICE_CONTAINER,
@@ -77,6 +78,11 @@ def get_config(
 
     if network_params.gas_limit > 0:
         cmd.append("--suggested-gas-limit={0}".format(network_params.gas_limit))
+
+    # Connect directly to a post-ePBS (Gloas) builder when one is provided
+    # (e.g. buildoor with its builder API enabled).
+    if builder_api_url != None:
+        cmd.append("--builder-urls=" + builder_api_url)
 
     keymanager_api_cmd = [
         "--rpc",

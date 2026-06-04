@@ -34,6 +34,7 @@ snooper_el_launcher = import_module("./snooper/snooper_el_launcher.star")
 blobber_launcher = import_module("./blobber/blobber_launcher.star")
 cl_context_module = import_module("./cl/cl_context.star")
 bootnodoor_launcher = import_module("./bootnodoor/bootnodoor_launcher.star")
+buildoor = import_module("./mev/buildoor/buildoor_launcher.star")
 
 
 def launch_participant_network(
@@ -343,6 +344,19 @@ def launch_participant_network(
     if not args_with_right_defaults.participants:
         fail("No participants configured")
 
+    # If buildoor is running with its builder API enabled, expose its builder
+    # endpoint so prysm validator clients can connect to it directly (post-ePBS
+    # path) via the --builder-urls flag. The buildoor service name and port are
+    # deterministic, so the URL can be derived without waiting for the launch.
+    buildoor_builder_url = None
+    if (
+        args_with_right_defaults.mev_type == constants.BUILDOOR_MEV_TYPE
+        and args_with_right_defaults.buildoor_params.builder_api
+    ):
+        buildoor_builder_url = "http://{0}:{1}".format(
+            buildoor.BUILDOOR_SERVICE_NAME, buildoor.BUILDOOR_BUILDER_API_PORT
+        )
+
     vc_service_configs = {}
     vc_service_info = {}
     for index, participant in enumerate(args_with_right_defaults.participants):
@@ -580,6 +594,7 @@ def launch_participant_network(
             tempo_otlp_grpc_url=tempo_otlp_grpc_url,
             otel_otlp_grpc_url=otel_otlp_grpc_url,
             vc_binary_artifact=vc_binary_artifact,
+            builder_api_url=buildoor_builder_url,
         )
         if vc_service_config == None:
             continue
