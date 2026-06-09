@@ -88,6 +88,7 @@ def get_config(
         and image != "ethpandaops/prysm-validator:bharath-123-buildoor-apis"
     ):
         cmd.append("--builder-urls=" + builder_api_url)
+        cmd.append("--builder-max-execution-payment=200000000")
 
     keymanager_api_cmd = [
         "--rpc",
