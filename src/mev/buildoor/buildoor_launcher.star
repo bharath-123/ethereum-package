@@ -3,7 +3,6 @@ shared_utils = import_module("../../shared_utils/shared_utils.star")
 
 BUILDOOR_SERVICE_NAME = "buildoor"
 BUILDOOR_API_PORT = 8080
-BUILDOOR_BUILDER_API_PORT = 9000
 
 VALIDATOR_RANGES_MOUNT_DIRPATH_ON_SERVICE = "/validator-ranges"
 VALIDATOR_RANGES_ARTIFACT_NAME = "validator-ranges"
@@ -50,7 +49,6 @@ def launch_buildoor(
         "--builder-privkey={0}".format(builder_bls_key),
         "--wallet-privkey={0}".format(wallet_key),
         "--api-port={0}".format(BUILDOOR_API_PORT),
-        "--builder-api-port={0}".format(BUILDOOR_BUILDER_API_PORT),
     ]
 
     if buildoor_params.builder_api:
@@ -85,9 +83,6 @@ def launch_buildoor(
                     transport_protocol="TCP",
                     application_protocol="http",
                 ),
-                "builder-api": PortSpec(
-                    number=BUILDOOR_BUILDER_API_PORT, transport_protocol="TCP"
-                ),
             },
             cmd=cmd,
             files=files,
@@ -103,7 +98,7 @@ def launch_buildoor(
         "mev_endpoint": "http://{0}@{1}:{2}".format(
             constants.DEFAULT_MEV_PUBKEY,
             BUILDOOR_SERVICE_NAME,
-            BUILDOOR_BUILDER_API_PORT,
+            BUILDOOR_API_PORT,
         ),
         "api_url": "http://{0}:{1}".format(
             BUILDOOR_SERVICE_NAME,
