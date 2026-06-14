@@ -81,12 +81,7 @@ def get_config(
 
     # Connect directly to a post-ePBS (Gloas) builder when one is provided
     # (e.g. buildoor with its builder API enabled).
-    # HACK: this specific image crashes on startup with --builder-urls set, so
-    # skip the flag for it.
-    if (
-        builder_api_url != None
-        and image != "ethpandaops/prysm-validator:bharath-123-buildoor-apis"
-    ):
+    if builder_api_url != None:
         cmd.append("--builder-urls=" + builder_api_url)
         cmd.append("--builder-max-execution-payment=200000000")
 
