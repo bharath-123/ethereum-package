@@ -354,7 +354,7 @@ def launch_participant_network(
         and args_with_right_defaults.buildoor_params.builder_api
     ):
         buildoor_builder_url = "http://{0}:{1}".format(
-            buildoor.BUILDOOR_SERVICE_NAME, buildoor.BUILDOOR_BUILDER_API_PORT
+            buildoor.BUILDOOR_SERVICE_NAME, buildoor.BUILDOOR_API_PORT
         )
 
     vc_service_configs = {}

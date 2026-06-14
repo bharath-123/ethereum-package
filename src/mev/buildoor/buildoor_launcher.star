@@ -53,17 +53,9 @@ def launch_buildoor(
 
     if buildoor_params.builder_api:
         cmd.append("--builder-api-enabled")
-<<<<<<< HEAD
         cmd.append(
             "--builder-api-url=http://{0}:{1}".format(
                 BUILDOOR_SERVICE_NAME, BUILDOOR_API_PORT
-=======
-        # Pass buildoor its own builder API URL — the same URL that validator
-        # clients receive via the --builder-urls flag (see participant_network.star).
-        cmd.append(
-            "--builder-api-url=http://{0}:{1}".format(
-                BUILDOOR_SERVICE_NAME, BUILDOOR_BUILDER_API_PORT
->>>>>>> f46b7355 (pass builder-api url to buildoor)
             )
         )
 
