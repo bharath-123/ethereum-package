@@ -3,7 +3,6 @@ shared_utils = import_module("../../shared_utils/shared_utils.star")
 
 BUILDOOR_SERVICE_NAME = "buildoor"
 BUILDOOR_API_PORT = 8080
-BUILDOOR_BUILDER_API_PORT = 9000
 
 VALIDATOR_RANGES_MOUNT_DIRPATH_ON_SERVICE = "/validator-ranges"
 VALIDATOR_RANGES_ARTIFACT_NAME = "validator-ranges"
@@ -54,6 +53,11 @@ def launch_buildoor(
 
     if buildoor_params.builder_api:
         cmd.append("--builder-api-enabled")
+        cmd.append(
+            "--builder-api-url=http://{0}:{1}".format(
+                BUILDOOR_SERVICE_NAME, BUILDOOR_API_PORT
+            )
+        )
 
     if buildoor_params.epbs_builder:
         cmd.append("--epbs-enabled")
