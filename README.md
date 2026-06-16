@@ -1585,6 +1585,11 @@ buildoor_params:
   builder_api: true
   # Enable ePBS bidding and revealing
   epbs_builder: true
+  # Number of buildoor instances to launch. Each instance tags the blocks it
+  # builds with a distinct --extra-data-prefix ("buildoor-{instance}"), so
+  # multiple competing builders can be distinguished on-chain. When count is 1
+  # the service keeps the plain "buildoor" name for backwards compatibility.
+  count: 1
   # Extra parameters to pass to the buildoor service
   extra_args: []
 

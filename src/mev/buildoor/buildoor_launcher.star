@@ -41,32 +41,6 @@ def launch_buildoor(
     else:
         builder_bls_key = constants.DEFAULT_MEV_SECRET_KEY[2:]
 
-    cmd = [
-        "run",
-        "--cl-client={0}".format(beacon_uri),
-        "--el-rpc={0}".format(el_rpc_uri),
-        "--el-engine-api={0}".format(engine_rpc_uri),
-        "--el-jwt-secret=" + constants.JWT_MOUNT_PATH_ON_CONTAINER,
-        "--builder-privkey={0}".format(builder_bls_key),
-        "--wallet-privkey={0}".format(wallet_key),
-        "--api-port={0}".format(BUILDOOR_API_PORT),
-    ]
-
-    if buildoor_params.builder_api:
-        cmd.append("--builder-api-enabled")
-
-    if buildoor_params.epbs_builder:
-        cmd.append("--epbs-enabled")
-
-    if validator_ranges_artifact != None:
-        cmd.append(
-            "--validator-ranges-file={0}/{1}".format(
-                VALIDATOR_RANGES_MOUNT_DIRPATH_ON_SERVICE, VALIDATOR_RANGES_FILE_NAME
-            )
-        )
-
-    cmd += buildoor_params.extra_args
-
     files = {
         constants.JWT_MOUNTPOINT_ON_CLIENTS: jwt_file,
     }
@@ -74,35 +48,81 @@ def launch_buildoor(
     if validator_ranges_artifact != None:
         files[VALIDATOR_RANGES_MOUNT_DIRPATH_ON_SERVICE] = validator_ranges_artifact
 
-    buildoor_service = plan.add_service(
-        name=BUILDOOR_SERVICE_NAME,
-        config=ServiceConfig(
-            image=buildoor_params.image,
-            ports={
-                "api": PortSpec(
-                    number=BUILDOOR_API_PORT,
-                    transport_protocol="TCP",
-                    application_protocol="http",
+    # Spin up one buildoor service per requested instance. Each instance tags the
+    # blocks it builds with a distinct --extra-data-prefix ("buildoor-{instance}")
+    # so the builder that produced a given block can be identified on-chain.
+    endpoints = []
+    for instance in range(1, buildoor_params.count + 1):
+        # Keep the single-instance service name as the plain "buildoor" so existing
+        # references (proposer-settings relay URLs, enrich_mev_extra_params) keep
+        # working unchanged.
+        if buildoor_params.count == 1:
+            service_name = BUILDOOR_SERVICE_NAME
+        else:
+            service_name = "{0}-{1}".format(BUILDOOR_SERVICE_NAME, instance)
+
+        cmd = [
+            "run",
+            "--cl-client={0}".format(beacon_uri),
+            "--el-rpc={0}".format(el_rpc_uri),
+            "--el-engine-api={0}".format(engine_rpc_uri),
+            "--el-jwt-secret=" + constants.JWT_MOUNT_PATH_ON_CONTAINER,
+            "--builder-privkey={0}".format(builder_bls_key),
+            "--wallet-privkey={0}".format(wallet_key),
+            "--api-port={0}".format(BUILDOOR_API_PORT),
+            "--extra-data-prefix=buildoor-{0}".format(instance),
+        ]
+
+        if buildoor_params.builder_api:
+            cmd.append("--builder-api-enabled")
+
+        if buildoor_params.epbs_builder:
+            cmd.append("--epbs-enabled")
+
+        if validator_ranges_artifact != None:
+            cmd.append(
+                "--validator-ranges-file={0}/{1}".format(
+                    VALIDATOR_RANGES_MOUNT_DIRPATH_ON_SERVICE,
+                    VALIDATOR_RANGES_FILE_NAME,
+                )
+            )
+
+        cmd += buildoor_params.extra_args
+
+        plan.add_service(
+            name=service_name,
+            config=ServiceConfig(
+                image=buildoor_params.image,
+                ports={
+                    "api": PortSpec(
+                        number=BUILDOOR_API_PORT,
+                        transport_protocol="TCP",
+                        application_protocol="http",
+                    ),
+                },
+                cmd=cmd,
+                files=files,
+                min_cpu=MIN_CPU,
+                max_cpu=MAX_CPU,
+                min_memory=MIN_MEMORY,
+                max_memory=MAX_MEMORY,
+                node_selectors=global_node_selectors,
+                tolerations=tolerations,
+            ),
+        )
+        endpoints.append(
+            {
+                "name": service_name,
+                "mev_endpoint": "http://{0}@{1}:{2}".format(
+                    constants.DEFAULT_MEV_PUBKEY,
+                    service_name,
+                    BUILDOOR_API_PORT,
                 ),
-            },
-            cmd=cmd,
-            files=files,
-            min_cpu=MIN_CPU,
-            max_cpu=MAX_CPU,
-            min_memory=MIN_MEMORY,
-            max_memory=MAX_MEMORY,
-            node_selectors=global_node_selectors,
-            tolerations=tolerations,
-        ),
-    )
-    return {
-        "mev_endpoint": "http://{0}@{1}:{2}".format(
-            constants.DEFAULT_MEV_PUBKEY,
-            BUILDOOR_SERVICE_NAME,
-            BUILDOOR_API_PORT,
-        ),
-        "api_url": "http://{0}:{1}".format(
-            BUILDOOR_SERVICE_NAME,
-            BUILDOOR_API_PORT,
-        ),
-    }
+                "api_url": "http://{0}:{1}".format(
+                    service_name,
+                    BUILDOOR_API_PORT,
+                ),
+            }
+        )
+
+    return endpoints

@@ -707,9 +707,10 @@ def run(plan, args={}):
             builder_bls_secret_key,
             ranges,
         )
-        mev_endpoints.append(buildoor_endpoints["mev_endpoint"])
-        mev_endpoint_names.append(constants.BUILDOOR_MEV_TYPE)
-        buildoor_api_urls.append(buildoor_endpoints["api_url"])
+        for buildoor_endpoint in buildoor_endpoints:
+            mev_endpoints.append(buildoor_endpoint["mev_endpoint"])
+            mev_endpoint_names.append(buildoor_endpoint["name"])
+            buildoor_api_urls.append(buildoor_endpoint["api_url"])
     elif args_with_right_defaults.mev_type and (
         args_with_right_defaults.mev_type == constants.FLASHBOTS_MEV_TYPE
         or args_with_right_defaults.mev_type == constants.MEV_RS_MEV_TYPE
